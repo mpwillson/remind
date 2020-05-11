@@ -31,17 +31,17 @@
 
 enum cmd_type {
     CMD_ALL,
-    CMD_PERIODIC,
-    CMD_STANDARD,
-    CMD_DELETE,
     CMD_DEFINE,
-    CMD_MODIFY,
+    CMD_DELETE,
+    CMD_DUMP,
     CMD_EXPORT,
-    CMD_MOD_POINTER,
     CMD_INIT,
     CMD_LIST,
     CMD_LIST_HEADER,
-    CMD_DUMP
+    CMD_MODIFY,
+    CMD_MOD_POINTER,
+    CMD_PERIODIC,
+    CMD_STANDARD
 };
 
 /* Structure for action number list */
@@ -641,7 +641,7 @@ void export(char* filename)
 
     if ((header = rem_header()) == NULL) error(ABORT,error_msg[rem_error()]);
 
-    printf("remind -iY -f %s -c ",filename);
+    printf("remind -iq -f %s -c ",filename);
     for (int i=0;i<URGCOL;i+=2)
         printf("%d,%d ",header->ucol[i],header->ucol[i+1]);
     printf("\n");
@@ -679,9 +679,9 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
 
     switch (params->cmd) {
         case CMD_ALL:
-            display(ACT_STANDARD, params->urgency, params->quiet,
-                    params->hilite);
             display(ACT_PERIODIC, params->urgency, params->quiet,
+                    params->hilite);
+            display(ACT_STANDARD, params->urgency, params->quiet,
                     params->hilite);
             break;
         case CMD_DEFINE:

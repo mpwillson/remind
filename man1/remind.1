@@ -5,17 +5,17 @@ remind \- sets and issues reminders
 .B remind
 [\fB\-a\fR]
 [\fB-c\fR \fICOLOUR_PAIRS\fR]
+[\fB-D\fR \fIn[,n]...\fR]
 [\fB-d\fR \fIDATE\fR]
-[\fB-d\fR \fIn[,n]...\fR]
 [\fB-e\fR]
 [\fB-f\fR \fIFILENAME\fR]
 [\fB-h\fR]
 [\fB-i\fR]
-[\fB-l\fR]
 [\fB-L\fR]
+[\fB-l\fR]
 [\fB-m\fR \fIn[,n]...\fR]]
-[\fB-p\fR]
 [\fB-P\fR \fIPOINTER\fR]
+[\fB-p\fR]
 [\fB-q\fR]
 [\fB-r\fR \fIREPEAT\fR]
 [\fB-s\fR]
@@ -56,14 +56,14 @@ subset.
 The \-c argument may be specified with any invokation of remind,
 i.e. during remind.db file initialisation or reporting.
 .TP
-.BR \-d\ \fIDATE\fR
-Sets the date for an action.
-A \fIDATE\fR must be in the form dd/mm[/yyyy].
-.TP
 .BR \-D\ \FIn[,n]...\fR
 Deletes an action or actions, identified by their action numbers..
 Each action is given a unique number which must be specified in order
 to delete an action.
+.TP
+.BR \-d\ \fIDATE\fR
+Sets the date for an action.
+A \fIDATE\fR must be in the form dd/mm[/yyyy].
 .TP
 .BR \-e
 Writes, on stdout, the remind commands necessary to build the remind
@@ -85,6 +85,11 @@ If the remind.db file already
 exists, you will be asked to confirm initialisation.
 (The \-q switch will cause this confirmation to be omitted).
 .TP
+.BR \-L
+As \-l, but also displays the contents of the remind.dba
+file header record, and all records that are on the
+free list.
+.TP
 .BR \-l
 Lists the contents of the remind.db file.
 The report is not urgency highlighted, and reports on the entire
@@ -94,20 +99,11 @@ The \-s or \-p options may be specified
 and will restrict the report to standard or periodic,
 respectively.
 .TP
-.BR \-L
-As \-l, but also displays the contents of the remind.dba
-file header record, and all records that are on the
-free list.
-.TP
 .BR \-m\ \fI n[,n]...\fR
 Modifies the action(s) identifed by \fIn\fR.
 The urgency, warning, timeout, date and message may be modifed.
 The new values should be specified by using the appropriate
 argument (or a message).
-.TP
-.BR \-p
-Reports on periodic actions only.
-If a message is present, forces definition of a periodic action.
 .TP
 .BR \-P\ \fIPOINTER\fR
 Changes the next_action pointer in an action to the integer value
@@ -116,6 +112,10 @@ The action record(s) to modify is selected by the \-m
 option.
 \fBCAUTION:\fR Misuse can seriously damage the "remind.db"
 file.
+.TP
+.BR \-p
+Reports on periodic actions only.
+If a message is present, forces definition of a periodic action.
 .TP
 .BR \-q
 Quiet mode.

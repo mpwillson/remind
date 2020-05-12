@@ -30,18 +30,16 @@
 #define SECSPERDAY 86400
 
 enum cmd_type {
-    CMD_ALL,
     CMD_DEFINE,
     CMD_DELETE,
+    CMD_DISPLAY,
     CMD_DUMP,
     CMD_EXPORT,
     CMD_INIT,
     CMD_LIST,
     CMD_LIST_HEADER,
     CMD_MODIFY,
-    CMD_MOD_POINTER,
-    CMD_PERIODIC,
-    CMD_STANDARD
+    CMD_MOD_POINTER
 };
 
 /* Structure for action number list */
@@ -54,7 +52,7 @@ struct st_nlist {
 struct st_params {
     char* filename;
     enum cmd_type cmd;
-    enum act_type forced;
+    int set_type;
     int ucol[URGCOL];
     bool colour_set;
     int urgency;
@@ -181,7 +179,7 @@ char* repeat_str(struct st_repeat repeat)
     return repstr;
 }
 
-bool parse_repeat(char* rstr,enum repeat_type* type, int* day, int* nday)
+bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
 {
     int ntoks;
     char typech;
@@ -218,12 +216,15 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     char *switcharg = "dwuDmxtfcPXr"; /* switches that have arguments */
 
     /* set defaults */
-    params->cmd = CMD_ALL;
+    params->cmd = CMD_DISPLAY;
     params->quiet = false;
     params->urgency = -1;
     params->colour_set = false;
-    params->forced = 0;
+    params->set_type = ACT_PERIODIC|ACT_STANDARD;
     params->hilite = "";
+    params->actlist = NULL;
+    params->filename = getenv(REMIND_ENV);
+    if (params->filename == NULL) params->filename = REMIND_FILE;
     for (int i=0;i<URGCOL;i++) params->ucol[i] = ((i%2==0)?37:40);
 
     newact->type = ACT_STANDARD;
@@ -235,9 +236,6 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     newact->repeat.type = EOF;
     newact->repeat.day = 0;
     newact->repeat.nday = 0;
-    params->actlist = NULL;
-    params->filename = getenv(REMIND_ENV);
-    if (params->filename == NULL) params->filename = REMIND_FILE;
 
     while (--argc > 0 && (*++argv)[0] == '-') {
         for (s=argv[0]+1;*s != '\0'; s++) {
@@ -246,7 +244,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
             }
             switch (*s) {
                 case 'a':
-                    params->cmd = CMD_ALL;
+                    params->set_type = ACT_PERIODIC|ACT_STANDARD;
                     break;
                 case 'c':
                     for (int i=0;i<URGCOL;i+=2) {
@@ -261,7 +259,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                     if ((newact->time = date_parse(*++argv)) <= 0) {
                         error(ABORT,"bad date format");
                     }
-                    if (params->forced != ACT_STANDARD)
+                    if (params->set_type != ACT_STANDARD)
                         newact->type = ACT_PERIODIC;
                     --argc;
                     break;
@@ -299,9 +297,8 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                     --argc;
                     break;
                 case 'p':
-                    params->cmd = CMD_PERIODIC;
                     newact->type = ACT_PERIODIC;
-                    params->forced = ACT_PERIODIC;
+                    params->set_type = ACT_PERIODIC;
                     break;
                 case 'P':
                     params->pointer = atoi(*++argv);
@@ -320,9 +317,8 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                     newact->type = ACT_PERIODIC;
                     break;
                 case 's':
-                    params->cmd = CMD_STANDARD;
                     newact->type = ACT_STANDARD;
-                    params->forced = ACT_STANDARD;
+                    params->set_type = ACT_STANDARD;
                     break;
                 case 't':
                     newact->timeout = atoi(*++argv);
@@ -364,7 +360,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                 error(ABORT,"bad date format");
             }
             else if (newact->time != 0) {
-                if (!params->forced) newact->type = ACT_PERIODIC;
+                if (!params->set_type) newact->type = ACT_PERIODIC;
                 s = strchr(s,' ');    /* find next token */
                 if (s == NULL) continue; /* wasn't one */
                 s++; /* start of next token */
@@ -378,8 +374,9 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
         strncat(newact->msg," ",MSGSIZ-strlen(newact->msg));
     }
     *(newact->msg+strlen(newact->msg)-1) = '\0';
-    /* presence of a message overrides display type */
-    if (strlen(newact->msg) != 0 && params->cmd <= CMD_STANDARD) {
+    /* presence of a message means define an action, unless
+     * something other than DISPLAY requested */
+    if (strlen(newact->msg) != 0 && params->cmd == CMD_DISPLAY) {
         params->cmd = CMD_DEFINE;
     }
     /* use defaults for values unset */
@@ -550,26 +547,26 @@ void delete_action(int actno)
     return;
 }
 
-void list_actions(enum cmd_type option, enum act_type forced)
+void list_actions(enum cmd_type option, int set_type)
 {
     REMHDR* header;
     ACTREC* action;
 
     header = rem_header();
     if (option == CMD_LIST_HEADER) {
-        printf("P: %d  S: %d  F: %d  Num: %d  ",header->phead, header->shead,
+        printf("P: %d  S: %d  F: %d  Num: %d [",header->phead, header->shead,
                header->fhead,header->numrec);
         for (int i=0; i<URGCOL; i+=2) {
-            printf("(%d,%d) ",header->ucol[i], header->ucol[i+1]);
+            printf("%d,%d%s",header->ucol[i], header->ucol[i+1],
+                   (i==URGCOL-2?"":" "));
         }
-        printf("\n");
+        printf("]\n");
     }
     for (int i=1; i<=header->numrec-1; i++) {
         action = act_read(i);
         if (action == NULL) error(ABORT,error_msg[rem_error()],i);
-        if ((action->type == ACT_FREE && option == CMD_LIST_HEADER) ||
-            (forced == 0 && action->type != ACT_FREE) ||
-            (action->type == forced)) {
+        if ((option == CMD_LIST_HEADER && action->type == ACT_FREE) ||
+            (action->type & set_type)) {
             printf("[%03d] %1d %1d %2d %s %2d %s \"%s\"\n",
                    i, action->type,
                    action->urgency, action->warning, date_str(action->time),
@@ -678,12 +675,6 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
     if (params->colour_set) rem_set_hilite(params->ucol);
 
     switch (params->cmd) {
-        case CMD_ALL:
-            display(ACT_PERIODIC, params->urgency, params->quiet,
-                    params->hilite);
-            display(ACT_STANDARD, params->urgency, params->quiet,
-                    params->hilite);
-            break;
         case CMD_DEFINE:
             define_action(newact,params->quiet);
             break;
@@ -692,6 +683,16 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
             while (actno != NULL) {
                 delete_action(actno->n);
                 actno = actno->next;
+            }
+            break;
+        case CMD_DISPLAY:
+            if (params->set_type & ACT_PERIODIC) {
+                display(ACT_PERIODIC, params->urgency, params->quiet,
+                        params->hilite);
+            }
+            if (params->set_type & ACT_STANDARD) {
+                display(ACT_STANDARD, params->urgency, params->quiet,
+                        params->hilite);
             }
             break;
         case CMD_DUMP:
@@ -710,7 +711,7 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
             break;
         case CMD_LIST:
         case CMD_LIST_HEADER:
-            list_actions(params->cmd,params->forced);
+            list_actions(params->cmd,params->set_type);
             break;
         case CMD_MODIFY:
             actno = params->actlist;
@@ -725,14 +726,6 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
                 modify_action_pointer(actno->n,params->pointer);
                 actno = actno->next;
             }
-            break;
-        case CMD_PERIODIC:
-            display(ACT_PERIODIC, params->urgency, params->quiet,
-                    params->hilite);
-            break;
-        case CMD_STANDARD:
-            display(ACT_STANDARD, params->urgency, params->quiet,
-                    params->hilite);
             break;
         default:
             error(ABORT,"internal command error: %d",params->cmd);

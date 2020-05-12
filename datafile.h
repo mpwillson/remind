@@ -10,7 +10,7 @@
 #define URGCOL 8
 
 enum rem_errors {
-    OPEN =1,
+    OPEN = 1,
     SEEK,
     READ,
     WRITE,

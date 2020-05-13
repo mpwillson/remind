@@ -1,183 +1,241 @@
-.TH REMIND 1
-.SH NAME
-remind \- sets and issues reminders
-.SH SYNOPSIS
-.B remind
-[\fB\-a\fR]
-[\fB-c\fR \fICOLOUR_PAIRS\fR]
-[\fB-D\fR \fIn[,n]...\fR]
-[\fB-d\fR \fIDATE\fR]
-[\fB-e\fR]
-[\fB-f\fR \fIFILENAME\fR]
-[\fB-h\fR]
-[\fB-i\fR]
-[\fB-L\fR]
-[\fB-l\fR]
-[\fB-m\fR \fIn[,n]...\fR]]
-[\fB-P\fR \fIPOINTER\fR]
-[\fB-p\fR]
-[\fB-q\fR]
-[\fB-r\fR \fIREPEAT\fR]
-[\fB-s\fR]
-[\fB-t\fR \fITIMEOUT\fR]
-[\fB-u\fR \fIURGENCY\fR]
-[\fB-w\fR \fIWARNING\fR]
-[\fB-X\fR \fIn[,n]...\fR]]
-[\fBmessage\fR]
-.SH DESCRIPTION
-.B remind
+.Dd May 13,2020
+.Dt REMIND 1
+.Os
+.Sh NAME
+.Nm remind
+.Nd sets and issues reminders
+.Sh SYNOPSIS
+.Nm remind
+.Op Fl a
+.Op Fl c Ar COLOUR_PAIRS
+.Op Fl D Ar n[,n] ...
+.Op Fl d Ar DATE
+.Op Fl e
+.Op Fl f Ar FILENAME
+.Op Fl h
+.Op Fl i
+.Op Fl L
+.Op Fl l
+.Op Fl m Ar n[,n] ...
+.Op Fl P Ar POINTER
+.Op Fl p
+.Op Fl q
+.Op Fl r Ar REPEAT
+.Op Fl s
+.Op Fl t Ar TIMEOUT
+.Op Fl u Ar URGENCY
+.Op Fl w Ar WARNING
+.Op Fl X Ar n[,n] ...
+.Op message
+.Sh DESCRIPTION
+.Nm remind
 enables a user to record both date-based and on-going actions, and to
 issue reminders that these actions are outstanding.
 Actions may be given an urgency, may be timed-out automatically after
 a set number of days, and, for date-based actions, may be given a
 user-specified number of days warning.
+.Pp
 Each action is assigned a unique number for identification purposes.
 Remind records the information in a file (default name is remind.db).
 If invoked with no options, or one of the reporting options (-alLps)
 it will produce a list of desired reminder report.
 If invoked with a message, and no date, an on-going (or standard)
 action is defined.
-The -d option, together with a message, or a message of which the
+The
+.Fl d
+option, together with a message, or a message of which the
 first word is a date, defines a date-based (periodic) action.
-.SH OPTIONS
-.TP
-.BR \-a
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl a
 Issue reminders for both standard and periodic actions.  This is the
 default if no options, or message, are specified.
-.TP
-.BR \-c\ \fIf,b\ f,b\ f,b\ f,b\fR
+.El
+.Bl -tag -width Ds
+.It Fl c Ar f,b f,b f,b f,b
 Sets the urgency colour pairs for colour highlighting.
 There are four urgency levels, 1, the highest, to 4, the lowest.
 Each urgency is assigned a foreground and background colour (the
 default being white on black).
-All four colour pairs must be specified if the \-c argument is given.
+All four colour pairs must be specified if the
+.Fl c
+argument is given.
 Colour pair codes are as defined by ANSI Select Graphic Rendition
 subset.
-The \-c argument may be specified with any invokation of remind,
-i.e. during remind.db file initialisation or reporting.
-.TP
-.BR \-D\ \FIn[,n]...\fR
-Deletes an action or actions, identified by their action numbers..
+The -c argument may be specified with any invokation of remind,
+i.e. during
+.Pa remind.db
+file initialisation or reporting.
+.El
+.Bl -tag -width Ds
+.It Fl D Ar n[,n] ...
+Deletes an action or actions, identified by their action numbers.
 Each action is given a unique number which must be specified in order
 to delete an action.
-.TP
-.BR \-d\ \fIDATE\fR
+.El
+.Bl -tag -width Ds
+.It Fl d Ar DATE
 Sets the date for an action.
-A \fIDATE\fR must be in the form dd/mm[/yyyy].
-.TP
-.BR \-e
+A
+.Ar DATE
+must be in the form dd/mm[/yyyy].
+.El
+.Bl -tag -width Ds
+.It Fl e
 Writes, on stdout, the remind commands necessary to build the remind
 file.
-Output may be re\-directed to a file.
-.TP
-.BR \-f
+Output may be re-directed to a file.
+.El
+.Bl -tag -width Ds
+.It Fl f
 Sets remind database file name.
-The default is "remind.db"
-.TP
-.BR \-h
-Highlight actions, based on urgency (\-u) and colour (\-c) settings.
+The default is
+.Pa remind.db
+.El
+.Bl -tag -width Ds
+.It Fl h
+Highlight actions, based on
+.Fl u
+(urgency) and
+.Fl c
+(colour) settings.
 Highlighting uses ANSI escape sequences and colours.
-The default is to perform no highlighting.
-.TP
-.BR \-i
-Initialises the remind.db file.
-If the remind.db file already
+If omitted, no highlighting is performed.
+.El
+.Bl -tag -width Ds
+.It Fl i
+Initialises the
+.Pa remind.db
+file.
+If the
+.Pa remind.db
+file already
 exists, you will be asked to confirm initialisation.
-(The \-q switch will cause this confirmation to be omitted).
-.TP
-.BR \-L
-As \-l (see below), but also displays the contents of the remind.db
+(The
+.Fl q
+switch will cause this confirmation question to be omitted).
+.El
+.Bl -tag -width Ds
+.It Fl L
+As -l (see below), but also displays the contents of the
+.Pa remind.db
 file header record, and all records that are on the
 free list.
-.TP
-.BR \-l
-Lists the contents of the remind.db file.
+.El
+.Bl -tag -width Ds
+.It Fl l
+Lists the contents of the
+.Pa remind.db
+file.
 The report is not urgency highlighted, and reports on the entire
 contents of the file (i.e. dates, warnings, urgencies,
 timeouts etc).
-The \-s or \-p options may be specified
-and will restrict the report to standard or periodic,
+The -s or -p options may be specified
+and will restrict the report to standard or periodic actions
 respectively.
-.TP
-.BR \-m\ \fI n[,n]...\fR
-Modifies the action(s) identifed by \fIn\fR.
-The urgency, warning, timeout, date and message may be modifed.
+.El
+.Bl -tag -width Ds
+.It Fl m Ar n[,n] ...
+Modifies the action(s) identifed by
+.Ar n .
+The urgency, warning, timeout, date, repeat and message may be modifed.
 The new values should be specified by using the appropriate
-argument (or a message).
-.TP
-.BR \-P\ \fIPOINTER\fR
+argument (and/or a message).
+.El
+.Bl -tag -width Ds
+.It Fl P Ar POINTER
 Changes the next_action pointer in an action to the integer value
-\fIPOINTER\fR.
-The action record(s) to modify is selected by the \-m
-option.
-\fBCAUTION:\fR Misuse can seriously damage the "remind.db"
+.Ar POINTER .
+The action record to modify is selected by the -m
+argument.
+.Em CAUTION :
+Misuse can seriously damage the
+.Pa remind.db
 file.
-.TP
-.BR \-p
+.El
+.Bl -tag -width Ds
+.It Fl p
 Reports on periodic actions only.
 If a message is present, forces definition of a periodic action.
-.TP
-.BR \-q
-Quiet mode.
+.El
+.Bl -tag -width Ds
+.It Fl q
 Causes remind to omit the message confirming the creation of an
 action.
-Also suppresses confirmation question when creating a remind file when the file
+Also suppresses confirmation question when creating a remind file and the file
 already exists.
-.TP
-.BR \-r\ \fIREPEAT\fR
-Sets the type of repetition for a periodic action. The \fIREPEAT\fR
+.El
+.Bl -tag -width Ds
+.It Fl r Ar REPEAT
+Sets the type of repetition for a periodic action. The
+.Ar REPEAT
 argument must take one of the following forms:
-.RS
-.RS
-.nf
-y    yearly (the default)
-m    monthly, based on date of action
-wN   Nth day of every week (0 is Sunday, 6 is Saturday)
-nN,M Mth occurance of the Nth weekday
-.fi
-.RE
-If the M value for an \fIn\fR repetition is 6 or more, the due date will be
-the last occurance of the Nth weekday in the month.
-.RE
-.TP
-.BR \-s
+.Bl -tag -compact -offset indent
+.It Ar y
+yearly (the default)
+.It Ar m
+monthly, based on date of action
+.It Ar wN
+Nth day of every week (0 is Sunday, 6 is Saturday)
+.It Ar nN,M
+Mth occurance of the Nth weekday
+.El
+If the
+.Ar Mth
+occurance value is 6 or more, the due date will be the last
+occurance of the
+.Ar Nth
+weekday in the month.
+.El
+.Bl -tag -width Ds
+.It Fl s
 Reports on standard actions only.
 If specified when defining
 a new action, this flag will force a standard action
 definition, even if a date is given.
 This allows the creation of delayed standard actions.
-.TP
-.BR \-t\ \fITIMEOUT\fR
-Sets the timeout for a action.
-The integer timeout
-value is in days, and remind will automatically delete
-an action \fITIMEOUT\fR days after its defined date.
-.TP
-.BR \-u\ \fIURGENCY\fR
+.El
+.Bl -tag -width Ds
+.It Fl t Ar TIMEOUT
+Sets the timeout for an action.
+The timeout value is in days.
+.Nm remind
+will automatically delete an action
+.Ar TIMEOUT
+days after its defined date.
+.El
+.Bl -tag -width Ds
+.It Fl u Ar URGENCY
 This argument serves two purposes.
-It sets the urgency when
-defining an action, which can be from 0 to 4.
+Firstly, it sets the urgency when
+defining an action. Valid urgency values are zero to 4, inclusive.
 An action
 with zero urgency is known as a background action and will
-not normally be reported on, although the number of
+not normally be reported, although the number of
 background actions that have been defined will be issued.
 The default urgency is 4.
-If the \-u argument is specified when reporting, then
-only actions of that urgency are reported on.
+Secondaly, when the
+.Fl u
+argument is specified for reporting, 
+only actions of that urgency are reported.
 Zero is a valid urgency, and is the only time the background actions
 will be displayed.
-.TP
-.BR \-w\ \fIWARNING\fR
-Sets number of days warning required for a periodic
+.El
+.Bl -tag -width Ds
+.It Fl w Ar WARNING
+Sets the number of days warning required for a periodic
 action.  Default is 5 days.
-.TP
-.BR \-X\ \fIn[,n]...\fR
-Prints the contents of the action(s) specified by \fIn\fR.
+.El
+.Bl -tag -width Ds
+.It Fl X Ar n[,n] ...
+Prints the contents of the action(s) specified by
+.Ar n .
 The output includes the next_action pointer.
-.TP
-.BR message
-This is the message to be issued for the action.
-Multiple blanks will be reduced to one.
+.El
+.Bl -tag -width Ds
+.It Ar message
+Sets the message to be issued for the action.
+Multiple spaces between words  will be reduced to one.
 If the first word in a message is in the date format (dd/mm), a
 periodic action will be defined.
 During modification, if the message contains an ampersand (&), the
@@ -185,45 +243,51 @@ existing message will be used in place of the ampersand.  The permits
 the addition of leading and/or trailing text to the existing message.
 The message is limited to 80 characters and must follow all other
 arguments.
-.SH ENVIRONMENT
-The following environment variable affects the execution of \fBremind\fR:
-.TP
-.BR REMIND_FILE
-Sets the pathname of the remind.db file.
-This setting is overridden by the \-f command switch.
-.SH NOTES
-Command line options that do not have arguments may be
-concatenated (e.g. remind \-ls to produce a list of standard actions).
-.PP
-Before any actions can be defined, a remind.db file must be created,
-via the \-i command argument.
-The name may be changed from the
-default (remind.db) through the \-f argument.
-The urgency colour
-pairs may be defined at initialisation time, or re\-defined at any
-later time.
-.SH EXAMPLES
-To initialise a remind.db file:
-.PP
-.nf
-remind \-i \-c 37,41 37,44 30,47 37,40
-.fi
-.PP
+.Sh ENVIRONMENT
+The following environment variable affects the execution of
+.Nm remind
+.El
+.Bl -tag -width Ds
+.It Ev REMIND_FILE
+Sets the pathname of the
+.Pa remind.db
+file.
+This setting is overridden by the -f command switch.
+.Sh FILES
+.Nm remind
+stores actions in a file.  The default name is
+.Pa remind.db ,
+located in the current working directory.  This default may be
+overridden by value of the
+.Ar REMIND_FILE
+environment variable or by specifying the -f command argument.
+.Pp
+Before any actions can be defined, a
+.Pa remind.db
+file must be created,
+via the -i command argument.
+The remind data file name may be changed from the
+default name
+.Pa remind.db
+through the -f argument.
+.Sh EXAMPLES
+To initialise a
+.Pa remind.db
+file:
+.Dl remind -i -c 37,41 37,44 30,47 37,40
+.Pp
 To define some standard and periodic actions:
-.PP
-.nf
-remind Call Fred re outline plan
-remind \-u 1 Finish expense report!!
-remind \-d 5/8 \-t 1 Product meeting at head office
-remind 16/7 Wedding anniversary!!
-remind \-d \-r m 1/1 Monthly report due
-remind \-m 1 "& (7731829)"
-remind \-sd 7/10 New reporting procedure commences
-remind \-r n1,1 Team meeting on first Monday of every month
-.fi
-.SH BUGS
+.Dl remind Call Fred re outline plan
+.Dl remind -u 1 Finish expense report!!
+.Dl remind -d 5/8 -t 1 Product meeting at head office
+.Dl remind 16/7 Wedding anniversary!!
+.Dl remind  -r m 1/1 Monthly report due
+.Dl remind -m 1 "& (7731829)"
+.Dl remind -sd 7/10 New reporting procedure commences
+.Dl remind -r n1,1 Team meeting on first Monday of every month
+.Sh BUGS
 Urgency option is ignored when reporting on periodic actions
-.PP
+.Pp
 Warning period includes weekends.
 There should be an option to ignore non-working days when calculating
 when to issue a reminder

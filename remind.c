@@ -210,8 +210,7 @@ bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
 
 bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
 {
-    int k;
-    bool first_token = true;
+    int nargs;
     char *s, *np, *c, *term;
     char *switcharg = "dwuDmxtfcPXr"; /* switches that have arguments */
 
@@ -248,10 +247,11 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                     break;
                 case 'c':
                     for (int i=0;i<URGCOL;i+=2) {
-                        k = sscanf(*++argv,"%d,%d",&(params->ucol[i]),
-                                   &(params->ucol[i+1]));
+                        nargs = sscanf(*++argv,"%d,%d",&(params->ucol[i]),
+                                       &(params->ucol[i+1]));
                         --argc;
-                        if (k == EOF || k != 2) error(ABORT,"bad colour pair");
+                        if (nargs == EOF || nargs != 2)
+                            error(ABORT,"bad colour pair");
                     }
                     params->colour_set = true;
                     break;
@@ -353,8 +353,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     while (argc-- > 0) {
         s = strdq(*argv++);
         /* Check first token for date format, if time not already set */
-        if (first_token && newact->time == 0) {
-            first_token = false;
+        if (newact->time == 0) {
             newact->time = date_parse(s);
             if (newact->time < 0) {
                 error(ABORT,"bad date format");

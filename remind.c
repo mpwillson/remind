@@ -352,17 +352,21 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     /* assume non-switch argument is message */
     while (argc-- > 0) {
         s = strdq(*argv++);
-        /* Check first token for date format, if time not already set */
+        /* Check first msg token for date format, if time not already set */
         if (newact->time == 0) {
             newact->time = date_parse(s);
             if (newact->time < 0) {
                 error(ABORT,"bad date format");
             }
-            else if (newact->time != 0) {
+            else if (newact->time > 0) {
                 if (!params->set_type) newact->type = ACT_PERIODIC;
                 s = strchr(s,' ');    /* find next token */
                 if (s == NULL) continue; /* wasn't one */
                 s++; /* start of next token */
+            }
+            else {
+                /* no date token; set default time */
+                newact->time = date_now();
             }
         }
         strncat(newact->msg,s,MSGSIZ-strlen(newact->msg));
@@ -383,7 +387,6 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
         if (newact->timeout < 0) newact->timeout = 0;
         if (newact->urgency < 0 )newact->urgency = 4;
         if (newact->warning < 0 ) newact->warning = 5;
-        if (newact->time == 0) newact->time = date_now();
         if (newact->repeat.type == EOF) newact->repeat.type = RT_YEAR;
     }
     return true;

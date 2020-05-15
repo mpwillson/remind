@@ -3,9 +3,18 @@
 
 #include "date.h"
 
+static time_t fake_time = 0;
+
 time_t date_now(void)
 {
-    return time((time_t*)NULL);
+    return (fake_time?fake_time:time((time_t*)NULL));
+}
+
+void date_set_time(char *s)
+{
+    fake_time = date_parse(s);
+    if (fake_time < 0) fake_time = 0;
+    return;
 }
 
 /* Parse date in the form dd/mm[/yyyy] */
@@ -62,6 +71,20 @@ time_t date_make_current(time_t t, int month)
     return mktime(date);
 }
 
+time_t date_make_days_match(time_t t, int wday)
+{
+    struct tm* st;
+    int day_diff;
+
+    st = localtime(&t);
+    day_diff = wday - st->tm_wday;
+    if (day_diff == 0) return t;
+    if (day_diff < 0) day_diff += 7;
+    st->tm_mday += day_diff;
+    return mktime(st);
+
+}
+
 #define DATESTRSIZE 11
 
 char* date_str(time_t t)
@@ -74,4 +97,3 @@ char* date_str(time_t t)
              st->tm_year+1900);
     return dstr;
 }
-

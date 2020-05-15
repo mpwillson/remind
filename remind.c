@@ -19,6 +19,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <math.h>
 
 #include "datafile.h"
 #include "date.h"
@@ -211,8 +212,12 @@ bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
 bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
 {
     int nargs;
+    bool first_word;
     char *s, *np, *c, *term;
     char *switcharg = "dwuDmxtfcPXr"; /* switches that have arguments */
+
+    /* set effective time? */
+    if ((s = getenv("REMIND_TIME"))) date_set_time(s);
 
     /* set defaults */
     params->cmd = CMD_DISPLAY;
@@ -352,8 +357,8 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     /* assume non-switch argument is message */
     while (argc-- > 0) {
         s = strdq(*argv++);
-        /* Check first msg token for date format, if time not already set */
-        if (newact->time == 0) {
+        /* Check first msg word for date format, if time not already set */
+        if (first_word && newact->time == 0) {
             newact->time = date_parse(s);
             if (newact->time < 0) {
                 error(ABORT,"bad date format");
@@ -364,10 +369,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                 if (s == NULL) continue; /* wasn't one */
                 s++; /* start of next token */
             }
-            else {
-                /* no date token; set default time */
-                newact->time = date_now();
-            }
+            first_word = false;
         }
         strncat(newact->msg,s,MSGSIZ-strlen(newact->msg));
         if (strlen(newact->msg) == MSGSIZ) {
@@ -388,6 +390,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
         if (newact->urgency < 0 )newact->urgency = 4;
         if (newact->warning < 0 ) newact->warning = 5;
         if (newact->repeat.type == EOF) newact->repeat.type = RT_YEAR;
+        if (newact->time == 0) newact->time = date_now();
     }
     return true;
 }
@@ -395,7 +398,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
 time_t make_active_time(ACTREC* action)
 {
     double delta;
-    int day_diff, now_wday, now_mon;
+    int day_diff, now_wday, now_mon, period;
     struct tm* ev_tm, *now;
 
     time_t event_time, nowtime, fd_time, act_time;
@@ -409,11 +412,18 @@ time_t make_active_time(ACTREC* action)
             event_time = date_make_current(action->time,1);
             break;
         case RT_WEEK:
-            now = localtime(&nowtime);
-            now_wday = now->tm_wday;
-            day_diff = action->repeat.day - now_wday;
-            if (day_diff <= 0) day_diff += 7;
-            event_time = nowtime + (day_diff * SECSPERDAY);
+            period = (action->repeat.nday==0?1:action->repeat.nday) * 7 *
+                SECSPERDAY;
+            delta = difftime(nowtime,action->time);
+            if (delta < 0) {
+                /* action time is in the future; just return it */
+                event_time = action->time;
+            }
+            else {
+                /* compute next event time */
+                delta = ceil(delta / SECSPERDAY) * SECSPERDAY;
+                event_time = nowtime + period - ((int) delta)%period;
+            }
             break;
         case RT_MONTH_WEEK:
             ev_tm = localtime(&nowtime);
@@ -441,6 +451,9 @@ time_t make_active_time(ACTREC* action)
 void define_action(ACTREC* newact, int quiet)
 {
     int newrecno;
+
+    if (newact->repeat.type == RT_WEEK)
+        newact->time =  date_make_days_match(newact->time,newact->repeat.day);
 
     newrecno = act_define(newact);
     if (!quiet) printf("remind: action [%03d] defined\n",newrecno);
@@ -482,8 +495,8 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
                 case ACT_PERIODIC:
                     event_time = make_active_time(action);
                     delta = difftime(event_time,date_now());
-                    if (delta > 0 && delta <= action->warning*SECSPERDAY) {
-                        delta_days = delta/SECSPERDAY;
+                    if (delta > 0 && delta <= (action->warning+1)*SECSPERDAY) {
+                        delta_days = floor(delta/SECSPERDAY);
                         printf("%s[%03d] [%s]",
                                hilite_on(action->urgency, hilite),
                                actno, date_str(event_time));
@@ -608,6 +621,9 @@ void modify_action(int actno,ACTREC* newact)
         }
         strncpy(save.msg,newact->msg,MSGSIZ);
     }
+    /* force action time to match day of week of WEEK repeat */
+    if (save.repeat.type == RT_WEEK)
+        save.time = date_make_days_match(save.time,save.repeat.day);
 
     if ((newact->urgency >= 0 && save.type == ACT_STANDARD) ||
         (newact->time > 0 && save.type == ACT_PERIODIC)) {

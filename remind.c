@@ -117,13 +117,6 @@ void ask(char* filename)
     return;
 }
 
-/* convert string to lower case (not i18n compliant) */
-void strlower(char* s)
-{
-    s--;
-    while (*(++s)) if (*s >= 'A' && *s <= 'Z')   *s = *s | 040;
-}
-
 /* strip leading or trailing double quote character */
 char *strdq(char* s)
 {

@@ -1,4 +1,4 @@
-.Dd May 13,2020
+.Dd May 15,2020
 .Dt REMIND 1
 .Os
 .Sh NAME
@@ -38,7 +38,7 @@ user-specified number of days warning.
 Each action is assigned a unique number for identification purposes.
 Remind records the information in a file (default name is remind.db).
 If invoked with no options, or one of the reporting options (-alLps)
-it will produce a list of desired reminder report.
+it will produce the desired reminder report.
 If invoked with a message, and no date, an on-going (or standard)
 action is defined.
 The
@@ -173,14 +173,24 @@ Sets the type of repetition for a periodic action. The
 argument must take one of the following forms:
 .Bl -tag -compact -offset indent
 .It Ar y
-yearly (the default)
+yearly (the default).
 .It Ar m
-monthly, based on date of action
-.It Ar wN
-Nth day of every week (0 is Sunday, 6 is Saturday)
+monthly, based on the day the action date.
+.It Ar wN[,M]
+.Ar Nth
+day of every
+.Ar Mth
+week (0 is Sunday, 6 is Saturday).
+If
+.Ar M
+is omitted, default is 1.
+This repeat will cause the date of the action to be adjusted to match
+.Ar N .
 .It Ar nN,M
-Mth occurance of the Nth weekday
-.El
+.Ar Mth
+occurance of the
+.Ar Nth
+weekday in a month.
 If the
 .Ar Mth
 occurance value is 6 or more, the due date will be the last
@@ -245,7 +255,7 @@ the addition of leading and/or trailing text to the existing message.
 The message is limited to 80 characters and must follow all other
 arguments.
 .Sh ENVIRONMENT
-The following environment variable affects the execution of
+The following environment variables affect the execution of
 .Nm remind
 .El
 .Bl -tag -width Ds
@@ -254,6 +264,12 @@ Sets the pathname of the
 .Pa remind.db
 file.
 This setting is overridden by the -f command switch.
+.El
+.Bl -tag -width Ds
+.It Ev REMIND_TIME
+Sets the effective execution time of
+.Nm remind .
+Value must of the form dd/mm[/yyyy].
 .Sh FILES
 .Nm remind
 stores actions in a file.  The default name is
@@ -286,6 +302,7 @@ To define some standard and periodic actions:
 .Dl remind -m 1 "& (7731829)"
 .Dl remind -sd 7/10 New reporting procedure commences
 .Dl remind -r n1,1 Team meeting on first Monday of every month
+.Dl remind -r w4,2 -w 2 Sales meeting every second Thursday
 .Sh BUGS
 Urgency option is ignored when reporting on periodic actions
 .Pp

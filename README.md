@@ -11,3 +11,16 @@ A C command line program to issue reminders for actions and events.
             [message]
 
 See remind(1) man page for more.
+
+## ChangeLog
+
+### 1.1
+
+* Support for repeating periodic action on the Nth day of every Mth
+  week (e.g. every second Monday).
+* REMIND_TIME environment variable to set effective time of remind execution.
+* Fix off-by-one error when warning for periodic actions.
+
+### 1.0
+
+* First release.

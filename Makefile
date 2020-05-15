@@ -18,13 +18,17 @@ install:
 deinstall:
 	rm -f ${INSTALL_DIR}/bin/remind ${MAN_DIR}/remind.1.gz
 release:
-	@if [ v${version} = v ]; then \
+	@-if [ v${version} = v ]; then \
 		echo Please specify version required \(version=x.x\); \
 	else \
 		git archive --prefix=remind-${version}/ v${version} \
 			>remind-${version}.tar; \
-		gzip remind-${version}.tar; \
-		echo remind-${version}.tar.gz created; \
+		if [ $$? = 0 ]; then \
+			gzip remind-${version}.tar; \
+			echo remind-${version}.tar.gz created; \
+		else \
+			rm remind-${version}.tar; \
+		fi; \
 	fi
 html:
 	mandoc -T html man1/remind.1 >remind.html

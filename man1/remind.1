@@ -178,15 +178,15 @@ yearly (the default).
 monthly, based on the day the action date.
 .It Ar wN[,M]
 .Ar Nth
-day of every
+weekday (0 is Sunday, 6 is Saturday) of every
 .Ar Mth
-week (0 is Sunday, 6 is Saturday).
+week.
 If
 .Ar M
 is omitted, default is 1.
 This repeat will cause the date of the action to be adjusted to match
 .Ar N .
-.It Ar nN,M
+.It Ar nN[,M]
 .Ar Mth
 occurance of the
 .Ar Nth
@@ -197,6 +197,9 @@ occurance value is 6 or more, the due date will be the last
 occurance of the
 .Ar Nth
 weekday in the month.
+If
+.Ar M
+is omitted, default is 1.
 .El
 .Bl -tag -width Ds
 .It Fl s

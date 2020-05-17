@@ -6,8 +6,10 @@
 
 #define MAGIC "rmd3"
 
-#define MSGSIZ 80
-#define URGCOL 8
+enum {
+    MSGSIZ = 80,
+    URGCOL = 8
+};
 
 enum rem_errors {
     OPEN = 1,

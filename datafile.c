@@ -3,7 +3,9 @@
 
 #include "datafile.h"
 
-#define SEEKOK 0
+enum {
+    SEEKOK = 0
+};
 
 static FILE* actfile;
 

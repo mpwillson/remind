@@ -393,7 +393,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
 }
 
 /* return struct tm* to next event date of action where repeat is Mth
- * occurance of Nth weekday. */
+ * occurrence of Nth weekday. */
 struct tm* mw_ev_time(time_t* now_time, struct st_repeat repeat, int month)
 {
     struct tm* ev_tm;
@@ -457,7 +457,7 @@ time_t make_active_time(ACTREC* action)
                 }
             }
             else if (ev_tm->tm_mday < now_mday) {
-                /* current day is later than this month's occurrance;
+                /* current day is later than this month's occurrence;
                  * check next month */
                 ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon+1);
             }

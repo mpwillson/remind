@@ -16,10 +16,11 @@ See remind(1) man page for more.
 
 ### 1.1
 
-* Support for repeating periodic action on the Nth day of every Mth
-  week (e.g. every second Monday).
+* Add support for repeating periodic action on the Nth weekday of
+  every Mth week (e.g. every second Monday).
 * REMIND_TIME environment variable to set effective time of remind execution.
 * Fix off-by-one error when warning for periodic actions.
+* Fix timeout action deletion.
 
 ### 1.0
 

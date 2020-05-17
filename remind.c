@@ -24,11 +24,14 @@
 #include "datafile.h"
 #include "date.h"
 
-#define ABORT 0
-#define CONTINUE 1
 #define REMIND_ENV "REMIND_FILE"
 #define REMIND_FILE "remind.db"
-#define SECSPERDAY 86400
+
+enum {
+    ABORT = 0,
+    CONTINUE = 1,
+    SECSPERDAY = 86400
+};
 
 enum cmd_type {
     CMD_DEFINE,
@@ -178,6 +181,7 @@ bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
     int ntoks;
     char typech;
 
+    *nday = 1; /* default */
     ntoks = sscanf(rstr,"%c%d,%d",&typech,day,nday);
     switch (typech) {
         case 'y':
@@ -192,7 +196,7 @@ bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
             break;
         case 'n':
             *type = RT_MONTH_WEEK;
-            if (ntoks != 3) return false;
+            if (ntoks < 2) return false;
             break;
         default:
             return false;
@@ -205,7 +209,7 @@ bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
 bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
 {
     int nargs;
-    bool first_word;
+    bool first_word = true;
     char *s, *np, *c, *term;
     char *switcharg = "dwuDmxtfcPXr"; /* switches that have arguments */
 
@@ -388,10 +392,31 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     return true;
 }
 
+/* return struct tm* to next event date of action where repeat is Mth
+ * occurance of Nth weekday. */
+struct tm* mw_ev_time(time_t* now_time, struct st_repeat repeat, int month)
+{
+    struct tm* ev_tm;
+    time_t fd_time;
+
+    ev_tm = localtime(now_time);
+    ev_tm->tm_mday = 1;
+    ev_tm->tm_mon = month;
+    fd_time = mktime(ev_tm);
+    ev_tm = localtime(&fd_time);
+    /* calculate mday of event */
+    ev_tm->tm_mday = (repeat.day - ev_tm->tm_wday) +
+        ((repeat.nday-1)*7) + 1 +
+        ((repeat.day < ev_tm->tm_wday)?7:0);
+    fd_time = mktime(ev_tm);
+    return ev_tm;
+}
+
+
 time_t make_active_time(ACTREC* action)
 {
     double delta;
-    int day_diff, now_wday, now_mon, period;
+    int day_diff, now_wday, now_mon, period, now_mday;
     struct tm* ev_tm, *now;
 
     time_t event_time, nowtime, fd_time, act_time;
@@ -405,8 +430,6 @@ time_t make_active_time(ACTREC* action)
             event_time = date_make_current(action->time,1);
             break;
         case RT_WEEK:
-            period = (action->repeat.nday==0?1:action->repeat.nday) * 7 *
-                SECSPERDAY;
             delta = difftime(nowtime,action->time);
             if (delta < 0) {
                 /* action time is in the future; just return it */
@@ -414,6 +437,8 @@ time_t make_active_time(ACTREC* action)
             }
             else {
                 /* compute next event time */
+                period = (action->repeat.nday==0?1:action->repeat.nday) * 7 *
+                    SECSPERDAY;
                 delta = ceil(delta / SECSPERDAY) * SECSPERDAY;
                 event_time = nowtime + period - ((int) delta)%period;
             }
@@ -421,19 +446,22 @@ time_t make_active_time(ACTREC* action)
         case RT_MONTH_WEEK:
             ev_tm = localtime(&nowtime);
             now_mon = ev_tm->tm_mon;
-            ev_tm->tm_mday = 1;
-            fd_time = mktime(ev_tm);
-            ev_tm = localtime(&fd_time);
-            /* calculate mday of event (seems to work) */
-            ev_tm->tm_mday = (action->repeat.day - ev_tm->tm_wday) +
-                ((action->repeat.nday-1)*7) + 1 +
-                ((action->repeat.day < ev_tm->tm_wday)?7:0);
-            event_time = mktime(ev_tm);
-            /* check if date within current month; backtrack if not */
-            while (ev_tm->tm_mon > now_mon) {
-                ev_tm->tm_mday -= 7;
-                event_time = mktime(ev_tm);
+            now_mday = ev_tm->tm_mday;
+            ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon);
+            if (ev_tm->tm_mon > now_mon) {
+                /* calculated event day next month, look for last wday
+                 * in current month */
+                while (ev_tm->tm_mon > now_mon) {
+                    ev_tm->tm_mday -= 7;
+                    event_time = mktime(ev_tm);
+                }
             }
+            else if (ev_tm->tm_mday < now_mday) {
+                /* current day is later than this month's occurrance;
+                 * check next month */
+                ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon+1);
+            }
+            event_time = mktime(ev_tm);
             break;
         default:
             error(ABORT,"invalid repeat type found: %d",action->repeat.type);
@@ -466,7 +494,7 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
     while (actno != 0) {
         action = act_read(actno);
         if (action->timeout != 0 &&
-            difftime(action->time,date_now()) > action->timeout*SECSPERDAY) {
+            difftime(date_now(),action->time) > 0) {
             if (act_delete(actno) != 0)
                 error(ABORT,error_msg[rem_error()], actno);
         }
@@ -480,7 +508,7 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
                          (urgency >= 0 && urgency == action->urgency)) &&
                         difftime(date_now(),action->time) > -SECSPERDAY) {
                         if (action->urgency == 0) action->urgency = 4;
-                        printf("%s[%03d] %-74s%s\n",
+                        printf("%s[%03d] %s%s\n",
                                hilite_on(action->urgency,hilite), actno,
                                action->msg,hilite);
                     }

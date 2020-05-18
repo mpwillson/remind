@@ -30,7 +30,8 @@
 enum {
     ABORT = 0,
     CONTINUE = 1,
-    SECSPERDAY = 86400
+    SECSPERDAY = 86400,
+    ERRMSGSIZE = 132
 };
 
 enum cmd_type {
@@ -67,8 +68,6 @@ struct st_params {
 };
 
 typedef struct st_params PARAMS;
-
-#define ERRMSGSIZE 132
 
 /* datafile error messages matching error codes */
 char* error_msg[] = {
@@ -387,7 +386,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
         if (newact->urgency < 0 )newact->urgency = 4;
         if (newact->warning < 0 ) newact->warning = 5;
         if (newact->repeat.type == EOF) newact->repeat.type = RT_YEAR;
-        if (newact->time == 0) newact->time = date_now();
+        if (newact->time == 0) newact->time = date_now_eod();
     }
     return true;
 }

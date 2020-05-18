@@ -17,6 +17,20 @@ void date_set_time(char *s)
     return;
 }
 
+/* return time_t at end of current day */
+time_t date_now_eod(void)
+{
+    struct tm* tm;
+    time_t nowtime;
+
+    nowtime = date_now();
+    tm = localtime(&nowtime);
+    tm->tm_hour = 23;
+    tm->tm_min = 59;
+    tm->tm_sec = 59;
+    return mktime(tm);
+}
+
 /* Parse date in the form dd/mm[/yyyy] */
 time_t date_parse(char *s)
 {
@@ -24,11 +38,8 @@ time_t date_parse(char *s)
     struct tm* date;
     time_t nowtime;
 
-    nowtime = date_now();
+    nowtime = date_now_eod();
     date = localtime(&nowtime);
-    date->tm_sec = 59;
-    date->tm_min = 59;
-    date->tm_hour = 23;
     now_year = date->tm_year;
     century = date->tm_year%100;
     nread = sscanf(s,"%d/%d/%d",&(date->tm_mday),&(date->tm_mon),
@@ -85,7 +96,9 @@ time_t date_make_days_match(time_t t, int wday)
 
 }
 
-#define DATESTRSIZE 11
+enum {
+    DATESTRSIZE = 11
+};
 
 char* date_str(time_t t)
 {

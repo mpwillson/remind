@@ -9,5 +9,6 @@ extern char* date_str(time_t);
 extern time_t date_make_current(time_t,int);
 extern time_t date_make_days_match(time_t,int);
 extern void date_set_time(char*);
+extern time_t date_now_eod(void);
 
 #endif

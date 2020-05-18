@@ -21,13 +21,12 @@ release:
 	@-if [ v${version} = v ]; then \
 		echo Please specify version required \(version=x.x\); \
 	else \
-		git archive --prefix=remind-${version}/ v${version} \
-			>remind-${version}.tar; \
+		git archive --format=tar --prefix=remind-${version}/ v${version} | \
+			gzip >remind-${version}.tar.gz; \
 		if [ $$? = 0 ]; then \
-			gzip remind-${version}.tar; \
 			echo remind-${version}.tar.gz created; \
 		else \
-			rm remind-${version}.tar; \
+			rm remind-${version}.tar.gz; \
 		fi; \
 	fi
 html:

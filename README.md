@@ -14,6 +14,12 @@ See remind(1) man page for more.
 
 ## ChangeLog
 
+### 1.2
+
+* Make action timeout deletion actually obey timeout value.
+* Default action datetime is now set at end of current day.
+* Cleanup of Makefile release target.
+
 ### 1.1
 
 * Add support for repeating periodic action on the Nth weekday of

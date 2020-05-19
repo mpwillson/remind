@@ -493,7 +493,8 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
     while (actno != 0) {
         action = act_read(actno);
         if (action->timeout != 0 &&
-            difftime(date_now(),action->time) > 0) {
+            difftime(date_now(),action->time) >
+            (action->timeout-1) * SECSPERDAY) {
             if (act_delete(actno) != 0)
                 error(ABORT,error_msg[rem_error()], actno);
         }

@@ -12,7 +12,7 @@ time_t date_now(void)
 
 void date_set_time(char *s)
 {
-    fake_time = date_parse(s);
+    fake_time = date_parse(s,TIME_CURRENT);
     if (fake_time < 0) fake_time = 0;
     return;
 }
@@ -31,14 +31,17 @@ time_t date_now_eod(void)
     return mktime(tm);
 }
 
-/* Parse date in the form dd/mm[/yyyy] */
-time_t date_parse(char *s)
+/* Parse date in the form dd/mm[/yyyy] If eod is non-zero, returned
+ * time is set at end of day (23:59:59), otherwise current time of day
+ * is used.
+*/
+time_t date_parse(char *s, int eod)
 {
     int nread, now_year, century;
     struct tm* date;
     time_t nowtime;
 
-    nowtime = date_now_eod();
+    nowtime = (eod?date_now_eod():date_now());
     date = localtime(&nowtime);
     now_year = date->tm_year;
     century = date->tm_year%100;
@@ -103,10 +106,10 @@ enum {
 char* date_str(time_t t)
 {
     struct tm* st;
-    static char dstr[DATESTRSIZE+1];
+    static char dstr[DATESTRSIZE+21];
 
     st = localtime(&t);
-    snprintf(dstr,DATESTRSIZE,"%02d/%02d/%02d", st->tm_mday, st->tm_mon+1,
+    snprintf(dstr,DATESTRSIZE+20,"%02d/%02d/%02d", st->tm_mday, st->tm_mon+1,
              st->tm_year+1900);
     return dstr;
 }

@@ -35,13 +35,16 @@ Actions may be given an urgency, may be timed-out automatically after
 a set number of days, and, for date-based actions, may be given a
 user-specified number of days warning.
 .Pp
-Each action is assigned a unique number for identification purposes.
-Remind records the information in a file (default name is remind.db).
-If invoked with no options, or one of the reporting options (-alLps)
-it will produce the desired reminder report.
-If invoked with a message, and no date, an on-going (or standard)
-action is defined.
-The
+When first defined, an action is assigned a unique number for
+identification purposes.
+Remind records the information in a file, by default named
+.Pa remind.db
+in the current directory.
+If invoked with no options, or one of
+the reporting options (-alLps) it will produce the desired reminder
+report.
+If invoked with a message, and no date, an on-going (or
+standard) action is defined.  The
 .Fl d
 option, together with a message, or a message of which the
 first word is a date, defines a date-based (periodic) action.

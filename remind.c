@@ -257,7 +257,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                     params->colour_set = true;
                     break;
                 case 'd':
-                    if ((newact->time = date_parse(*++argv)) <= 0) {
+                    if ((newact->time = date_parse(*++argv,TIME_EOD)) <= 0) {
                         error(ABORT,"bad date format");
                     }
                     if (params->set_type != ACT_STANDARD)
@@ -355,12 +355,13 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
         s = strdq(*argv++);
         /* Check first msg word for date format, if time not already set */
         if (first_word && newact->time == 0) {
-            newact->time = date_parse(s);
+            newact->time = date_parse(s,TIME_EOD);
             if (newact->time < 0) {
                 error(ABORT,"bad date format");
             }
             else if (newact->time > 0) {
-                if (!params->set_type) newact->type = ACT_PERIODIC;
+                if (params->set_type != ACT_STANDARD)
+                    newact->type = ACT_PERIODIC;
                 s = strchr(s,' ');    /* find next token */
                 if (s == NULL) continue; /* wasn't one */
                 s++; /* start of next token */

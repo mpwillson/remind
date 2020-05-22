@@ -16,7 +16,7 @@ See remind(1) man page for more.
 
 ### 1.3
 
-* Honour urgency setting when reporting on periodic actions
+* Honour urgency setting when reporting on periodic actions.
 * If REMIND_TIME is set, current time of day is retained for new date.
 * Ensure periodic action is default when first word of message is a date.
 

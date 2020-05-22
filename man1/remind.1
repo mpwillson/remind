@@ -62,7 +62,9 @@ All four colour pairs must be specified if the
 argument is given.
 Colour pair codes are as defined by ANSI Select Graphic Rendition
 subset.
-The -c argument may be specified with any invokation of remind,
+The
+>Fl c
+argument may be specified with any invokation of remind,
 i.e. during
 .Pa remind.db
 file initialisation or reporting.
@@ -130,7 +132,11 @@ file.
 The report is not urgency highlighted, and reports on the entire
 contents of the file (i.e. dates, warnings, urgencies,
 timeouts etc).
-The -s or -p options may be specified
+The
+.Fl s
+or
+.Fl p
+options may be specified
 and will restrict the report to standard or periodic actions
 respectively.
 .El
@@ -229,9 +235,9 @@ with zero urgency is known as a background action and will
 not normally be reported, although the number of
 background actions that have been defined will be issued.
 The default urgency is 4.
-Secondaly, when the
+Secondly, when the
 .Fl u
-argument is specified for reporting, 
+argument is specified for reporting,
 only actions of that urgency are reported.
 Zero is a valid urgency, and is the only time the background actions
 will be displayed.
@@ -251,7 +257,7 @@ The output includes the next_action pointer.
 .It Ar message
 Sets the message to be issued for the action.
 Multiple spaces between words  will be reduced to one.
-If the first word in a message is in the date format (dd/mm), a
+If the first word in a message is in the date format (dd/mm[/yyyy]), a
 periodic action will be defined.
 During modification, if the message contains an ampersand (&), the
 existing message will be used in place of the ampersand.  The permits
@@ -267,7 +273,9 @@ The following environment variables affect the execution of
 Sets the pathname of the
 .Pa remind.db
 file.
-This setting is overridden by the -f command switch.
+This setting is overridden by the
+.Fl f
+command switch.
 .El
 .Bl -tag -width Ds
 .It Ev REMIND_TIME
@@ -281,16 +289,19 @@ stores actions in a file.  The default name is
 located in the current working directory.  This default may be
 overridden by value of the
 .Ar REMIND_FILE
-environment variable or by specifying the -f command argument.
+environment variable or by specifying the -f command switch.
 .Pp
 Before any actions can be defined, a
 .Pa remind.db
 file must be created,
-via the -i command argument.
-The remind data file name may be changed from the
-default name
-.Pa remind.db
-through the -f argument.
+via the
+.Fl i
+command argument.
+The default remind data file name,
+.Pa remind.db ,
+ may be overridden through the
+.Fl f
+command switch.
 .Sh EXAMPLES
 To initialise a
 .Pa remind.db
@@ -308,7 +319,6 @@ To define some standard and periodic actions:
 .Dl remind -r n1,1 Team meeting on first Monday of every month
 .Dl remind -r w4,2 -w 2 Sales meeting every second Thursday
 .Sh BUGS
-Urgency option is ignored when reporting on periodic actions
 .Pp
 Warning period includes weekends.
 There should be an option to ignore non-working days when calculating

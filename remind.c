@@ -516,7 +516,9 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
                 case ACT_PERIODIC:
                     event_time = make_active_time(action);
                     delta = difftime(event_time,date_now());
-                    if (delta > 0 && delta <= (action->warning+1)*SECSPERDAY) {
+                    if (delta > 0 && delta <= (action->warning+1)*SECSPERDAY &&
+                        (urgency < 0 ||
+                         (urgency >= 0 && urgency == action->urgency))) {
                         delta_days = floor(delta/SECSPERDAY);
                         printf("%s[%03d] [%s]",
                                hilite_on(action->urgency, hilite),
@@ -536,11 +538,13 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
         }
         actno = act_iter_next();
     }
-    if (type == ACT_STANDARD && urgency < 0 && nhidden > 0 && !quiet) {
+    if (urgency < 0 && nhidden > 0 && !quiet) {
+        char *typestr = (type==ACT_STANDARD?"standard":"periodic");
         if (nhidden == 1)
-            printf(">>>>> There is one background action\n");
+            printf(">>>>> There is one background %s action\n",typestr);
        else
-            printf(">>>>> There are %d background actions\n",nhidden);
+           printf(">>>>> There are %d background %s actions\n",nhidden,
+                  typestr);
     }
     return;
 }

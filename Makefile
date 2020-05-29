@@ -1,4 +1,4 @@
-.PHONY: clean install deinstall release html
+.PHONY: clean install deinstall release html test
 
 INSTALL_DIR=/usr/local
 MAN_DIR=${INSTALL_DIR}/share/man/man1
@@ -31,3 +31,6 @@ release:
 	fi
 html:
 	mandoc -T html man1/remind.1 >remind.html
+test:
+	sh test/test.sh >test/test.results 2>&1
+	diff -u test/gold.results test/test.results

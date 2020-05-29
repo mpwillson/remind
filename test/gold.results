@@ -1,0 +1,72 @@
+Initialisation
+Define periodic repeats
+remind: action [001] defined
+remind: action [002] defined
+remind: action [003] defined
+remind: action [004] defined
+remind: action [005] defined
+remind: action [006] defined
+remind: action [007] defined
+remind: action [008] defined
+Display
+[001] [07/01/2030] ( 6 days) First Monday in the month
+[002] [08/01/2030] ( 7 days) Second Tuesday in the month
+[003] [16/01/2030] (15 days) Third Wednesday in the month
+[004] [24/01/2030] (23 days) Fourth Thursday in the month
+[005] [25/01/2030] (24 days) Fifth Friday in the month
+[006] [26/01/2030] (25 days) Last Saturday in the month
+[007] [01/01/2030] (today) Every Tuesday
+[008] [04/01/2030] ( 3 days) 4th January periodic
+Define standard action
+remind: action [009] defined
+Display
+[001] [07/01/2030] ( 6 days) First Monday in the month
+[002] [08/01/2030] ( 7 days) Second Tuesday in the month
+[003] [16/01/2030] (15 days) Third Wednesday in the month
+[004] [24/01/2030] (23 days) Fourth Thursday in the month
+[005] [25/01/2030] (24 days) Fifth Friday in the month
+[006] [26/01/2030] (25 days) Last Saturday in the month
+[007] [01/01/2030] (today) Every Tuesday
+[008] [04/01/2030] ( 3 days) 4th January periodic
+List actions
+[001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
+[002] 1 4 25 01/01/2030  0 n2,2 "Second Tuesday in the month"
+[003] 1 4 25 01/01/2030  0 n3,3 "Third Wednesday in the month"
+[004] 1 4 25 01/01/2030  0 n4,4 "Fourth Thursday in the month"
+[005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
+[006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
+[007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
+[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[009] 2 4  5 02/01/2030  0 y0,0 "Delayed standard action"
+List actions with header
+P: 1  S: 9  F: 0  Num: 10 [37,40 37,40 37,40 37,40]
+[001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
+[002] 1 4 25 01/01/2030  0 n2,2 "Second Tuesday in the month"
+[003] 1 4 25 01/01/2030  0 n3,3 "Third Wednesday in the month"
+[004] 1 4 25 01/01/2030  0 n4,4 "Fourth Thursday in the month"
+[005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
+[006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
+[007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
+[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[009] 2 4  5 02/01/2030  0 y0,0 "Delayed standard action"
+Delete delayed action
+Delete free record
+remind: action [009] is on free list
+Modify free record
+remind: action [009] is on free list
+Define standard action with timeout
+remind: action [009] defined
+Display standard actions
+[009] Standard action for timeout delete
+Advance time to trigger timeout
+List actions with header
+P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
+[001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
+[002] 1 4 25 01/01/2030  0 n2,2 "Second Tuesday in the month"
+[003] 1 4 25 01/01/2030  0 n3,3 "Third Wednesday in the month"
+[004] 1 4 25 01/01/2030  0 n4,4 "Fourth Thursday in the month"
+[005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
+[006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
+[007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
+[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[009] 0 0  0 01/01/1970  0 y0,0 "."

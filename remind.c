@@ -73,14 +73,14 @@ typedef struct st_params PARAMS;
 char* error_msg[] = {
     "unused",
     "no such file: %s",
-    "bad seek for action: %d",
-    "bad read for action: %d",
-    "bad write for action: %d",
-    "invalid action record number: %d",
+    "record [%03d]: bad seek",
+    "record [%03d]: bad read",
+    "record [%03d]: bad write",
+    "action [%03d] does not exist",
     "unable to create remind file: %s",
     "that's no remind file: %s",
-    "action has invalid type: %d",
-    "action can't be found on list: %d"
+    "action [%03d] is on free list",
+    "action [%03d] can't be found on its list"
 };
 
 /* utility functions and procedures */
@@ -476,7 +476,8 @@ void define_action(ACTREC* newact, int quiet)
     if (newact->repeat.type == RT_WEEK)
         newact->time =  date_make_days_match(newact->time,newact->repeat.day);
 
-    newrecno = act_define(newact);
+    if ((newrecno = act_define(newact)) < 0)
+        error(ABORT,error_msg[rem_error()],-newrecno);
     if (!quiet) printf("remind: action [%03d] defined\n",newrecno);
     return;
 }
@@ -561,12 +562,12 @@ void create_file(char* filename, int ucol[], int quiet)
     return;
 }
 
-void dump_action(int act)
+void dump_action(int actno)
 {
     ACTREC* action;
 
-    if ((action = act_read(act)) != NULL) {
-        printf("--Action: %d--\n",act);
+    if ((action = act_read(actno)) != NULL) {
+        printf("--Action: %d--\n",actno);
         printf("Type:    %d\n",action->type);
         printf("Next:    %d\n",action->next);
         printf("Urgency: %d\n",action->urgency);
@@ -577,7 +578,7 @@ void dump_action(int act)
         printf("Msg:     \"%s\"\n",action->msg);
     }
     else {
-        error(CONTINUE, error_msg[rem_error()], act);
+        error(CONTINUE, error_msg[rem_error()], actno);
     }
     return;
 }
@@ -603,13 +604,13 @@ void list_actions(enum cmd_type option, int set_type)
         }
         printf("]\n");
     }
-    for (int i=1; i<=header->numrec-1; i++) {
-        action = act_read(i);
-        if (action == NULL) error(ABORT,error_msg[rem_error()],i);
+    for (int actno=1; actno < header->numrec; actno++) {
+        if ((action = act_read(actno)) == NULL)
+            error(ABORT, error_msg[rem_error()], actno);
         if ((option == CMD_LIST_HEADER && action->type == ACT_FREE) ||
             (action->type & set_type)) {
             printf("[%03d] %1d %1d %2d %s %2d %s \"%s\"\n",
-                   i, action->type,
+                   actno, action->type,
                    action->urgency, action->warning, date_str(action->time),
                    action->timeout, repeat_str(action->repeat), action->msg);
         }
@@ -627,6 +628,11 @@ void modify_action(int actno,ACTREC* newact)
         error(CONTINUE,error_msg[rem_error()],actno);
         return;
     }
+    if (action->type == ACT_FREE) {
+        error(CONTINUE,error_msg[RE_ACTIONTYPE],actno);
+        return;
+    }
+
     /* action points to static storage */
     save = *action;
     if (newact->warning >= 0) save.warning = newact->warning;
@@ -713,6 +719,7 @@ void export(char* filename)
 bool perform_cmd(PARAMS* params, ACTREC* newact)
 {
     struct st_nlist* actno;
+    int errno;
 
     if (params->cmd != CMD_INIT && !rem_open(params->filename))
         error(ABORT,error_msg[rem_error()],params->filename);
@@ -774,7 +781,8 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
         default:
             error(ABORT,"internal command error: %d",params->cmd);
     }
-    rem_cls();
+    if (rem_cls() == EOF) error(ABORT,"close failed: %s",params->filename);
+    if ((errno = rem_error()) != 0) error(ABORT,error_msg[errno],0);
     return true;
 }
 

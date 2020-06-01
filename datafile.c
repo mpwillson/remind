@@ -4,7 +4,7 @@
 #include "datafile.h"
 
 enum {
-    SEEKOK = 0
+    RE_SEEKOK = 0
 };
 
 static FILE* actfile;
@@ -25,22 +25,22 @@ REMHDR* rem_header(void)
 
 static int rec_read(int recno, void* dest)
 {
-    if (fseek(actfile,(long) (sizeof(action)*recno),0) != SEEKOK) {
-        return SEEK;
+    if (fseek(actfile,(long) (sizeof(action)*recno),0) != RE_SEEKOK) {
+        return  (rem_error_code = RE_SEEK);
     }
     if (fread(dest,(recno==0?sizeof(header):sizeof(action)),1,actfile) != 1) {
-        return READ;
+        return (rem_error_code = RE_READ);
     }
     return 0;
 }
 
 static int rec_write(int recno, void* data)
 {
-    if (fseek(actfile,(long) sizeof(action)*recno,0) != SEEKOK) {
-        return (rem_error_code = SEEK);
+    if (fseek(actfile,(long) sizeof(action)*recno,0) != RE_SEEKOK) {
+        return (rem_error_code = RE_SEEK);
     }
     if (fwrite(data,(recno==0?sizeof(header):sizeof(action)),1,actfile) != 1) {
-        return (rem_error_code = WRITE);
+        return (rem_error_code = RE_WRITE);
     }
     return 0;
 }
@@ -50,11 +50,11 @@ static int rec_write(int recno, void* data)
  * data needed. */
 ACTREC* act_read(int recno)
 {
-    if (recno < 0 || recno > header.numrec) {
-        rem_error_code = RECNO;
+    if (recno < 1 || recno > header.numrec) {
+        rem_error_code = RE_RECNO;
         return NULL;
     }
-    if ((rec_read(recno,(void*) &action)) == 0) {
+    if (rec_read(recno, &action) == 0) {
         return &action;
     }
     else {
@@ -62,14 +62,19 @@ ACTREC* act_read(int recno)
     }
 }
 
-int act_write(int recno, void* data)
+int act_write(int recno, ACTREC* data)
 {
+    if (recno < 1 || recno > header.numrec) {
+        rem_error_code = RE_RECNO;
+        return RE_RECNO;
+    }
     return rec_write(recno,data);
 }
 
 int  rem_cls(void)
 {
-    act_write(0,&header);
+    rem_error_code = 0;
+    rec_write(0,&header);
     return fclose(actfile);
 }
 
@@ -92,10 +97,9 @@ bool rem_create(char* filename, int ucol[]) {
         header.numrec = 1;
         strcpy(header.magic,MAGIC);
         if (ucol) rem_set_hilite(ucol);
-        rec_write(0,(void*) &header);
     }
     else {
-        rem_error_code = CREATE;
+        rem_error_code = RE_CREATE;
     }
     return actfile != NULL;
 }
@@ -104,15 +108,15 @@ bool rem_open(char* filename)
 {
     actfile = fopen(filename,"r+");
     if (actfile) {
-        rec_read(0,(void*) &header);
+        rec_read(0,&header);
         if (strcmp(header.magic,MAGIC) != 0) {
-            rem_error_code = VERSION;
+            rem_error_code = RE_VERSION;
             fclose(actfile);
             actfile = NULL;
         }
     }
     else {
-        rem_error_code = OPEN;
+        rem_error_code = RE_OPEN;
     }
     return actfile != NULL;
 }
@@ -140,28 +144,27 @@ bool act_iter_init(ACTYPE type)
 int act_iter_next()
 {
     int actno = 0;
-    ACTREC* act = NULL;
+    ACTREC* activerec = &action;
 
-    if (next_rec != 0) act = act_read(next_rec);
-    if (act != NULL) {
+    if (next_rec != 0 && rec_read(next_rec,activerec) == 0) {
         actno = next_rec;
-        next_rec = act->next;
+        next_rec = activerec->next;
     }
     return actno;
 }
 
-
+/* returns action number defined.  If negative, i/o error ocurred. */
 int act_define(ACTREC* newact)
 {
-    int actrec,last,current,*listhead;
-    ACTREC* activerec;
+    int actno,last,current,*listhead;
+    ACTREC* activerec = &action;
 
     /* find a free record */
     if (header.fhead == 0)
-        actrec = header.numrec++;
+        actno = header.numrec++;
     else {
-        actrec = header.fhead;
-        activerec = act_read(actrec);
+        actno = header.fhead;
+        if (rec_read(actno,activerec) != 0) return -actno;
         header.fhead = activerec->next;
     }
 
@@ -177,7 +180,7 @@ int act_define(ACTREC* newact)
 
     last = 0;
     while (current) {
-        activerec = act_read(current);
+        if (rec_read(current, activerec) != 0) return -current;
         if (newact->type == ACT_STANDARD &&
             activerec->urgency > newact->urgency) break; /* urgency
                                                             order */
@@ -190,82 +193,76 @@ int act_define(ACTREC* newact)
 
     if (last == 0) {  /* list empty or inserting at head */
         newact->next = current;
-        *listhead = actrec;
+        *listhead = actno;
     }
     else {
         if (current == 0) { /* inserting at end of list */
-            activerec->next = actrec;
-            act_write(last,activerec);
+            activerec->next = actno;
+            if (rec_write(last,activerec) != 0) return -last;
             newact->next = 0; /* end of list marker  */
         }
         else { /* inserting in middle of list */
-            activerec = act_read(last);
-            activerec->next = actrec;
-            act_write(last,activerec);
+            if (rec_read(last,activerec) != 0) return -last;
+            activerec->next = actno;
+            if (rec_write(last,activerec) != 0) return -last;
             newact->next = current;
         }
     }
-    act_write(actrec,newact);
-    return actrec;
+    if (rec_write(actno,newact) != 0) return -actno;
+    return actno;
 }
 
-int act_delete(int del_action)
+int act_delete(int del_actno)
 {
-    int actrec,last,current;
-    ACTREC* action;
-
-    /* valid record number? */
-    if (del_action <= 0 || del_action >= header.numrec) {
-        rem_error_code = RECNO;
-        return RECNO;
-    }
+    int actno,last,current;
+    ACTREC* activerec = &action;
 
     /* determine action type */
-    action = act_read(del_action);
-    if (action->type != ACT_PERIODIC && action->type != ACT_STANDARD) {
-        rem_error_code = ACTIONTYPE;
-        return ACTIONTYPE;
+    if (rec_read(del_actno,activerec) != 0) return rem_error_code;
+    if (activerec->type == ACT_FREE) {
+        rem_error_code = RE_ACTIONTYPE;
+        return RE_ACTIONTYPE;
     }
 
-    last = 0;
     /* search correct list */
-    if (action->type == ACT_STANDARD)
+    if (activerec->type == ACT_STANDARD)
         current = header.shead;
     else
         current = header.phead;
 
+    last = 0;
     while (current) {
-        action = act_read(current);
-        if (current == del_action) break;
+        if (rec_read(current,activerec) != 0) return rem_error_code;
+        if (current == del_actno) break;
         last = current;
-        current = action->next;
+        current = activerec->next;
     }
     if (last == 0) {  /* list empty or deleting head */
-        if (action->type == ACT_STANDARD)
-            header.shead = action->next;
+        if (activerec->type == ACT_STANDARD)
+            header.shead = activerec->next;
         else
-            header.phead = action->next;
+            header.phead = activerec->next;
     }
     else {
         if (current == 0) { /* action not on list! */
-            rem_error_code = LIST;
-            return LIST;
+            rem_error_code = RE_LIST;
+            return RE_LIST;
         }
         else { /* deleting in middle of list */
-            actrec = action->next;
-            action = act_read(last);
-            action->next = actrec;
-            act_write(last,action);
+            actno = activerec->next;
+            if (rec_read(last, activerec) != 0) return rem_error_code;
+            activerec->next = actno;
+            if (rec_write(last,activerec) != 0) return rem_error_code;
         }
     }
-    action->next = header.fhead;
-    action->type = ACT_FREE;
-    action->warning = 0;
-    action->urgency = 0;
-    action->time = 0;
-    action->timeout = 0;
-    strcpy(action->msg,".");
-    act_write(current,action);
+    activerec->next = header.fhead;
+    activerec->type = ACT_FREE;
+    activerec->warning = 0;
+    activerec->urgency = 0;
+    activerec->time = 0;
+    activerec->timeout = 0;
+    strcpy(activerec->msg,".");
+    if (rec_write(current,activerec) != 0) return current;
     header.fhead = current;
     return 0;
 }

@@ -12,15 +12,15 @@ enum {
 };
 
 enum rem_errors {
-    OPEN = 1,
-    SEEK,
-    READ,
-    WRITE,
-    RECNO,
-    CREATE,
-    VERSION,
-    ACTIONTYPE,
-    LIST
+    RE_OPEN = 1,
+    RE_SEEK,
+    RE_READ,
+    RE_WRITE,
+    RE_RECNO,
+    RE_CREATE,
+    RE_VERSION,
+    RE_ACTIONTYPE,
+    RE_LIST
 };
 
 enum act_type {
@@ -71,7 +71,7 @@ typedef enum act_type ACTYPE;
 /* public function prototypes */
 extern int rem_error(void);
 extern ACTREC* act_read(int);
-extern int act_write(int,void*);
+extern int act_write(int,ACTREC*);
 extern int rem_cls(void);
 extern bool rem_create(char*, int[]);
 extern bool rem_open(char*);

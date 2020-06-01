@@ -37,5 +37,29 @@ REMIND_TIME=02/01/2030
 ./remind -s
 echo List actions with header
 ./remind -L
+echo Re-initialise
+yes|./remind -i -c 1,2 3,4 5,6 7,8
+echo Urgencies
+./remind -u 1 Urgency 1
+./remind -u 2 Urgency 2
+./remind -u 3 Urgency 3
+./remind -u 4 Urgency 4
+./remind -h
+./remind -u 4
+./remind -u 3
+./remind -u 2
+./remind -u 1
+./remind -m 1 -u 0 Urgency 0
+./remind
+./remind -u 0
+echo Day of week repeats
+./remind -r w2,1 -w 7 Every Tuesday
+./remind -r w1,2 -w 14 Every second Monday
+./remind -r w5,2 -w 14 Every second Friday
+./remind -p
+echo Report on 9th Jan
+REMIND_TIME=09/01/2030
+./remind -p
+
 
 

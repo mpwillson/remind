@@ -10,7 +10,8 @@ remind:	remind.c datafile.c date.c datafile.h date.h
 man1/remind.1.gz: man1/remind.1
 	gzip -c man1/remind.1 >man1/remind.1.gz
 clean:
-	rm -f remind *.o man1/remind.1.gz remind.html remind*.tar.gz
+	rm -f remind *.o man1/remind.1.gz remind.html remind*.tar.gz \
+		test/test.results
 install:
 	cp remind ${INSTALL_DIR}/bin
 	mkdir -p ${MAN_DIR}

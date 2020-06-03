@@ -1,0 +1,9 @@
+*.o
+remind
+*~
+\#*
+\.\#*
+*.gz
+remind.html
+remind.db
+test/test.results

@@ -424,10 +424,10 @@ time_t make_active_time(ACTREC* action)
     nowtime = date_now();
     switch (action->repeat.type) {
         case RT_YEAR:
-            event_time = date_make_current(action->time,0);
+            event_time = date_make_current(action->time,YEAR_ONLY);
             break;
         case RT_MONTH:
-            event_time = date_make_current(action->time,1);
+            event_time = date_make_current(action->time,YEAR_AND_MONTH);
             break;
         case RT_WEEK:
             delta = difftime(nowtime,action->time);

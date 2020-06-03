@@ -5,7 +5,9 @@
 
 enum {
     TIME_CURRENT = 0,
-    TIME_EOD = 1
+    TIME_EOD = 1,
+    YEAR_ONLY = 0,
+    YEAR_AND_MONTH =1
 };
 
 extern time_t date_now(void);

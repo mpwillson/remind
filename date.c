@@ -106,10 +106,10 @@ enum {
 char* date_str(time_t t)
 {
     struct tm* st;
-    static char dstr[DATESTRSIZE+21];
+    static char dstr[DATESTRSIZE+1];
 
     st = localtime(&t);
-    snprintf(dstr,DATESTRSIZE+20,"%02d/%02d/%02d", st->tm_mday, st->tm_mon+1,
+    snprintf(dstr,DATESTRSIZE,"%02d/%02d/%02d", st->tm_mday, st->tm_mon+1,
              st->tm_year+1900);
     return dstr;
 }

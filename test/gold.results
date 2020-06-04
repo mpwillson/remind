@@ -100,3 +100,29 @@ Report on 9th Jan
 [007] [18/01/2030] ( 9 days) Every second Friday
 [006] [21/01/2030] (12 days) Every second Monday
 [005] [15/01/2030] ( 6 days) Every Tuesday
+Month repeats
+remind: action [001] defined
+remind: action [002] defined
+[001] [10/01/2030] (tomorrow) Yearly, 10th January
+[002] [10/01/2030] (tomorrow) 10th of every month
+[002] [10/02/2030] (tomorrow) 10th of every month
+Export
+remind: action [003] defined
+remind: action [004] defined
+remind: action [005] defined
+P: 1  S: 3  F: 0  Num: 6 [37,40 37,40 37,40 37,40]
+[001] 1 4  5 10/01/2030  0 y0,0 "Yearly, 10th January"
+[002] 1 4  5 10/01/2030  0 m0,1 "10th of every month"
+[003] 2 4  5 09/02/2030  0 y0,0 "A standard action"
+[004] 2 4  5 11/02/2030  0 y0,0 "A delayed standard action"
+[005] 1 4  7 12/02/2030  0 w2,1 "Every Tuesday"
+After re-creation
+P: 3  S: 1  F: 0  Num: 6 [37,40 37,40 37,40 37,40]
+[001] 2 4  5 09/02/2030  0 y0,0 "A standard action"
+[002] 2 4  5 11/02/2030  0 y0,0 "A delayed standard action"
+[003] 1 4  5 10/01/2030  0 y0,0 "Yearly, 10th January"
+[004] 1 4  5 10/01/2030  0 m0,1 "10th of every month"
+[005] 1 4  7 12/02/2030  0 w2,1 "Every Tuesday"
+[004] [10/02/2030] (tomorrow) 10th of every month
+[005] [12/02/2030] ( 3 days) Every Tuesday
+[001] A standard action

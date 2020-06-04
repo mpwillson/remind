@@ -60,6 +60,21 @@ echo Day of week repeats
 echo Report on 9th Jan
 REMIND_TIME=09/01/2030
 ./remind -p
-
-
-
+echo Month repeats
+./remind -iq
+./remind 10/1 Yearly, 10th January
+./remind -r m 10/1 10th of every month
+./remind
+REMIND_TIME=09/02/2030
+./remind
+echo Export
+./remind A standard action
+./remind -s 11/2 A delayed standard action
+./remind -r w2,1 -w 7 Every Tuesday
+./remind -L
+./remind -e >/tmp/remind$$.sh
+sh /tmp/remind$$.sh
+rm /tmp/remind$$.sh
+echo After re-creation
+./remind -L
+./remind

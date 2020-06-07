@@ -29,7 +29,7 @@
 .Op message
 .Sh DESCRIPTION
 .Nm remind
-enables a user to record both date-based and on-going actions, and to
+enables the user to record both date-based and on-going actions, and to
 issue reminders that these actions are outstanding.
 Actions may be given an urgency, may be timed-out automatically after
 a set number of days, and, for date-based actions, may be given a
@@ -292,17 +292,17 @@ stores actions in a file.  The default name is
 located in the current working directory.  This default may be
 overridden by value of the
 .Ar REMIND_FILE
-environment variable or by specifying the -f command switch.
+environment variable or by specifying the
+.Fl f
+command switch.
 .Pp
 Before any actions can be defined, a
 .Pa remind.db
-file must be created,
+file must be created and initialised
 via the
 .Fl i
 command argument.
-The default remind data file name,
-.Pa remind.db ,
- may be overridden through the
+The default remind data file name may be overridden through the
 .Fl f
 command switch.
 .Sh EXAMPLES

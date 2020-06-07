@@ -31,7 +31,7 @@ release:
 		fi; \
 	fi
 html:
-	mandoc -T html man1/remind.1 >remind.html
+	mandoc -O fragment -T html man1/remind.1 >remind.html
 test:
 	sh test/test.sh >test/test.results 2>&1
 	diff -u test/gold.results test/test.results

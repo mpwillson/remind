@@ -82,6 +82,14 @@ time_t date_make_current(time_t t, int month)
     if (month) {
         date->tm_mon = (date->tm_mday>=cur_mday)?cur_mon:cur_mon+1;
     }
+    else {
+        time_t event_time = mktime(date);
+        if (difftime(event_time,nowtime) < 0) {
+            /* event_time in the past; push to next year, to allow for
+             * crossing year boundaries */
+            date->tm_year++;
+        }
+    }
     return mktime(date);
 }
 

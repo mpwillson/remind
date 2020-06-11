@@ -126,3 +126,13 @@ P: 3  S: 1  F: 0  Num: 6 [37,40 37,40 37,40 37,40]
 [004] [10/02/2030] (tomorrow) 10th of every month
 [005] [12/02/2030] ( 3 days) Every Tuesday
 [001] A standard action
+Test year boundary
+remind: action [001] defined
+remind: action [002] defined
+remind: action [003] defined
+At 28/12/2029
+[002] [01/01/2030] ( 4 days) Yearly, 1st January
+[003] [02/01/2030] ( 5 days) 2nd of every month
+[001] [31/12/2029] ( 3 days) Yearly, 31st December
+At 29/01/2020
+[003] [02/02/2020] ( 4 days) 2nd of every month

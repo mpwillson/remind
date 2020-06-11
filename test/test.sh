@@ -78,3 +78,14 @@ rm /tmp/remind$$.sh
 echo After re-creation
 ./remind -L
 ./remind
+echo Test year boundary
+REMIND_TIME=28/12/2029
+./remind -iq
+./remind 31/12 Yearly, 31st December
+./remind 01/01 Yearly, 1st January
+./remind -r m 2/1 2nd of every month
+echo At ${REMIND_TIME}
+./remind -p
+REMIND_TIME=29/01/2020
+echo At ${REMIND_TIME}
+./remind -a

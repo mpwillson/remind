@@ -14,6 +14,12 @@ See remind(1) man page for more.
 
 ## ChangeLog
 
+### 1.3.1
+
+* Correctly warn about periodic actions in the following year.
+* Prevent modification or deletion of freed actions.
+* Improve remind file error handling.
+
 ### 1.3
 
 * Honour urgency setting when reporting on periodic actions.

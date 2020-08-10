@@ -1,4 +1,4 @@
-#remind: simpel test script
+#remind: simple test script
 export REMIND_FILE=./remind.db
 export REMIND_TIME=01/01/2030
 echo Initialisation

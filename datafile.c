@@ -217,6 +217,11 @@ int act_delete(int del_actno)
     int actno,last,current;
     ACTREC* activerec = &action;
 
+    if (del_actno <= 0) {
+        rem_error_code = RE_RECNO;
+        return RE_RECNO;
+    }
+
     /* determine action type */
     if (rec_read(del_actno,activerec) != 0) return rem_error_code;
     if (activerec->type == ACT_FREE) {
@@ -266,4 +271,3 @@ int act_delete(int del_actno)
     header.fhead = current;
     return 0;
 }
-

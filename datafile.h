@@ -26,7 +26,8 @@ enum rem_errors {
 enum act_type {
     ACT_FREE,
     ACT_PERIODIC,
-    ACT_STANDARD
+    ACT_STANDARD,
+    NACT_TYPES
 };
 
 enum repeat_type {
@@ -82,5 +83,6 @@ extern int* rem_get_hilite(void);
 extern int act_define(ACTREC*);
 extern int act_delete(int);
 extern REMHDR* rem_header(void);
+extern char* str_act_type(int);
 
 #endif

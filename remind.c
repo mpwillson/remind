@@ -568,7 +568,7 @@ void dump_action(int actno)
 
     if ((action = act_read(actno)) != NULL) {
         printf("--Action: %d--\n",actno);
-        printf("Type:    %d\n",action->type);
+        printf("Type:    %s\n",str_act_type(action->type));
         printf("Next:    %d\n",action->next);
         printf("Urgency: %d\n",action->urgency);
         printf("Warning: %d\n",action->warning);

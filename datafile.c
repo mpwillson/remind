@@ -271,3 +271,12 @@ int act_delete(int del_actno)
     header.fhead = current;
     return 0;
 }
+
+char* str_act_type(int act_type)
+{
+    static char* act_str[NACT_TYPES] = {
+        "Free","Periodic","Standard"
+    };
+
+    return (act_type < 0 || act_type > NACT_TYPES)? "" : act_str[act_type];
+}

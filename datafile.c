@@ -278,5 +278,5 @@ char* str_act_type(int act_type)
         "Free","Periodic","Standard"
     };
 
-    return (act_type < 0 || act_type > NACT_TYPES)? "" : act_str[act_type];
+    return (act_type < 0 || act_type >= NACT_TYPES)? "" : act_str[act_type];
 }

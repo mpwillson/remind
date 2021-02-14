@@ -212,11 +212,12 @@ int act_define(ACTREC* newact)
     return actno;
 }
 
-int act_delete(int del_actno)
+int act_delete(int del_actno, bool nullify)
 {
     int actno,last,current;
     ACTREC* activerec = &action;
-
+    ACTREC save;
+    
     if (del_actno <= 0) {
         rem_error_code = RE_RECNO;
         return RE_RECNO;
@@ -254,19 +255,23 @@ int act_delete(int del_actno)
             return RE_LIST;
         }
         else { /* deleting in middle of list */
+            save = *activerec;             /* preserve action data */
             actno = activerec->next;
             if (rec_read(last, activerec) != 0) return rem_error_code;
             activerec->next = actno;
             if (rec_write(last,activerec) != 0) return rem_error_code;
+            *activerec = save;
         }
     }
     activerec->next = header.fhead;
     activerec->type = ACT_FREE;
-    activerec->warning = 0;
-    activerec->urgency = 0;
-    activerec->time = 0;
-    activerec->timeout = 0;
-    strcpy(activerec->msg,".");
+    if (nullify) {
+        activerec->warning = 0;
+        activerec->urgency = 0;
+        activerec->time = 0;
+        activerec->timeout = 0;
+        strcpy(activerec->msg,".");
+    }
     if (rec_write(current,activerec) != 0) return current;
     header.fhead = current;
     return 0;

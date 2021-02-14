@@ -77,6 +77,9 @@ file initialisation or reporting.
 Deletes an action or actions, identified by their action numbers.
 Each action is given a unique number which must be specified in order
 to delete an action.
+If the
+.Fl q
+switch is specified, the contents of the action are nulled.
 .El
 .Bl -tag -width Ds
 .It Fl d Ar DATE
@@ -174,6 +177,7 @@ action.
 Suppresses background actions message when reporting standard actions.
 Also suppresses confirmation question when creating a remind file and the file
 already exists.
+Lastly, when deleting an action, will cause the action contents to be nulled.
 .El
 .Bl -tag -width Ds
 .It Fl r Ar REPEAT

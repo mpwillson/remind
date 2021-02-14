@@ -497,7 +497,7 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
         if (action->timeout != 0 &&
             difftime(date_now(),action->time) >
             (action->timeout-1) * SECSPERDAY) {
-            if (act_delete(actno) != 0)
+            if (act_delete(actno, true) != 0)
                 error(ABORT,error_msg[rem_error()], actno);
         }
         else if (urgency < 0 && action->urgency == 0) {
@@ -583,9 +583,10 @@ void dump_action(int actno)
     return;
 }
 
-void delete_action(int actno)
+void delete_action(int actno, bool nullify)
 {
-    if ((act_delete(actno) != 0)) error(CONTINUE,error_msg[rem_error()],actno);
+    if ((act_delete(actno, nullify) != 0))
+        error(CONTINUE, error_msg[rem_error()], actno);
     return;
 }
 
@@ -660,7 +661,7 @@ void modify_action(int actno,ACTREC* newact)
     if ((newact->urgency >= 0 && save.type == ACT_STANDARD) ||
         (newact->time > 0 && save.type == ACT_PERIODIC)) {
         /* need to re-insert action into list; potential sequence change */
-        delete_action(actno);
+        delete_action(actno, false);
         define_action(&save,true);
     }
     else {
@@ -732,7 +733,7 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
         case CMD_DELETE:
             actno = params->actlist;
             while (actno != NULL) {
-                delete_action(actno->n);
+                delete_action(actno->n, params->quiet);
                 actno = actno->next;
             }
             break;

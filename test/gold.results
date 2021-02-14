@@ -50,10 +50,32 @@ P: 1  S: 9  F: 0  Num: 10 [37,40 37,40 37,40 37,40]
 [008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
 [009] 2 4  5 02/01/2030  0 y0,0 "Delayed standard action"
 Delete delayed action
+P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
+[001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
+[002] 1 4 25 01/01/2030  0 n2,2 "Second Tuesday in the month"
+[003] 1 4 25 01/01/2030  0 n3,3 "Third Wednesday in the month"
+[004] 1 4 25 01/01/2030  0 n4,4 "Fourth Thursday in the month"
+[005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
+[006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
+[007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
+[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[009] 0 4  5 02/01/2030  0 y0,0 "Delayed standard action"
 Delete free record
 remind: action [009] is on free list
 Modify free record
 remind: action [009] is on free list
+Delete with nullify
+remind: action [009] defined
+P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
+[001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
+[002] 1 4 25 01/01/2030  0 n2,2 "Second Tuesday in the month"
+[003] 1 4 25 01/01/2030  0 n3,3 "Third Wednesday in the month"
+[004] 1 4 25 01/01/2030  0 n4,4 "Fourth Thursday in the month"
+[005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
+[006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
+[007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
+[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[009] 0 0  0 01/01/1970  0 y0,0 "."
 Define standard action with timeout
 remind: action [009] defined
 Display standard actions

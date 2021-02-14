@@ -24,10 +24,15 @@ echo List actions with header
 ./remind -L
 echo Delete delayed action
 ./remind -D 9
+./remind -L
 echo Delete free record
 ./remind -D 9
 echo Modify free record
 ./remind -m 9
+echo Delete with nullify
+./remind -u 2 -w 13 For nullification
+./remind -Dq 9
+./remind -L
 echo Define standard action with timeout
 ./remind -t 1 Standard action for timeout delete
 echo Display standard actions

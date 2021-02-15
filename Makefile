@@ -1,7 +1,7 @@
 .PHONY: clean install deinstall release html test
 
 INSTALL_DIR=/usr/local
-MAN_DIR=${INSTALL_DIR}/share/man/man1
+MAN_DIR=${INSTALL_DIR}/man/man1
 
 all: remind man1/remind.1.gz
 

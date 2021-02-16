@@ -91,6 +91,6 @@ REMIND_TIME=28/12/2029
 ./remind -r m 2/1 2nd of every month
 echo At ${REMIND_TIME}
 ./remind -p
-REMIND_TIME=29/01/2020
+REMIND_TIME=29/01/2030
 echo At ${REMIND_TIME}
 ./remind -a

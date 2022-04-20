@@ -14,6 +14,11 @@ See remind(1) man page for more.
 
 ## ChangeLog
 
+### 1.3.2
+
+* Fix incorrection calculation of time to event when crossing DST
+  boundary.
+
 ### 1.3.1
 
 * Correctly warn about periodic actions in the following year.

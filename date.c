@@ -61,6 +61,8 @@ time_t date_parse(char *s, int eod)
         (date->tm_mon < 1 || date->tm_mon > 12) ||
         (date->tm_year < now_year)) return -1; /* malformed date */
     date->tm_mon--;
+    /* let mktime figure out if date is dst */
+    date->tm_isdst = -1;
     return mktime(date);
 }
 
@@ -81,6 +83,8 @@ time_t date_make_current(time_t t, int month)
     date->tm_year = cur_year;
     if (month) {
         date->tm_mon = (date->tm_mday>=cur_mday)?cur_mon:cur_mon+1;
+        /* new month, different dst? */
+        date->tm_isdst = -1;
     }
     else {
         time_t event_time = mktime(date);
@@ -108,16 +112,30 @@ time_t date_make_days_match(time_t t, int wday)
 }
 
 enum {
-    DATESTRSIZE = 11
+    DATESTRSIZE = 11,
+    DATEFULLSTRSIZE = 25
 };
 
 char* date_str(time_t t)
 {
     struct tm* st;
-    static char dstr[DATESTRSIZE+1];
+    static char dstr[DATESTRSIZE];
 
     st = localtime(&t);
     snprintf(dstr,DATESTRSIZE,"%02d/%02d/%02d", st->tm_mday, st->tm_mon+1,
              st->tm_year+1900);
+    return dstr;
+}
+
+char* date_full_str(time_t t)
+{
+    struct tm* st;
+    static char dstr[DATEFULLSTRSIZE];
+
+    st = localtime(&t);
+    snprintf(dstr,DATEFULLSTRSIZE,"%02d/%02d/%02dT%02d:%02d:%02d %s",
+             st->tm_mday, st->tm_mon+1, st->tm_year+1900,
+             st->tm_hour, st->tm_min, st->tm_sec,
+             st->tm_zone);
     return dstr;
 }

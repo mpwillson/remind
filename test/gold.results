@@ -152,9 +152,17 @@ Test year boundary
 remind: action [001] defined
 remind: action [002] defined
 remind: action [003] defined
+remind: action [004] defined
 At 28/12/2029
 [002] [01/01/2030] ( 4 days) Yearly, 1st January
 [003] [02/01/2030] ( 5 days) 2nd of every month
+[004] [28/12/2029] (today) 28th of every month
 [001] [31/12/2029] ( 3 days) Yearly, 31st December
 At 29/01/2030
 [003] [02/02/2030] ( 4 days) 2nd of every month
+At 29/04/2030 - in DST
+[003] [02/05/2030] ( 3 days) 2nd of every month
+At 30/03/2030 - one day before DST
+[003] [02/04/2030] ( 3 days) 2nd of every month
+At 26/10/2030 - one day before end DST
+[004] [28/10/2030] ( 2 days) 28th of every month

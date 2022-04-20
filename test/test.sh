@@ -89,8 +89,18 @@ REMIND_TIME=28/12/2029
 ./remind 31/12 Yearly, 31st December
 ./remind 01/01 Yearly, 1st January
 ./remind -r m 2/1 2nd of every month
+./remind -r m 28/10 28th of every month
 echo At ${REMIND_TIME}
 ./remind -p
 REMIND_TIME=29/01/2030
 echo At ${REMIND_TIME}
+./remind -a
+REMIND_TIME=29/04/2030
+echo At ${REMIND_TIME} - in DST
+./remind -a
+REMIND_TIME=30/03/2030
+echo At ${REMIND_TIME} - one day before DST
+./remind -a
+REMIND_TIME=26/10/2030
+echo At ${REMIND_TIME} - one day before end DST
 ./remind -a

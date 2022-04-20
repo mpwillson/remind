@@ -16,7 +16,7 @@ See remind(1) man page for more.
 
 ### 1.3.2
 
-* Fix incorrection calculation of time to event when crossing DST
+* Fix incorrect calculation of time to event when crossing DST
   boundary.
 
 ### 1.3.1

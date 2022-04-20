@@ -10,6 +10,10 @@ all: remind man1/remind.1.gz
 
 remind: ${OBJS}
 
+datafile.o:	datafile.h
+
+date.o: date.h
+
 man1/remind.1.gz: man1/remind.1
 	gzip -c man1/remind.1 >man1/remind.1.gz
 

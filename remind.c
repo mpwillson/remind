@@ -680,12 +680,16 @@ void modify_action_pointer(int actno, int pointer)
     act_write(actno, action);
 }
 
+enum {
+    DAYMONSTRLEN = 5
+};
+
 void export(char* filename)
 {
     ACTREC* action;
     REMHDR* header;
     int actno;
-
+    char daymon[DAYMONSTRLEN+1];
 
     if ((header = rem_header()) == NULL) error(ABORT,error_msg[rem_error()]);
 
@@ -710,9 +714,11 @@ void export(char* filename)
     while (actno) {
         if ((action = act_read(actno)) == NULL)
             error(ABORT,error_msg[rem_error()],actno);
+        strncpy(daymon, date_str(action->time), DAYMONSTRLEN);
+        daymon[DAYMONSTRLEN] = '\0';
         printf("remind -fruwtdq %s %s %d %d %d %s \"%s\"\n", filename,
                repeat_str(action->repeat),  action->urgency, action->warning,
-               action->timeout, date_str(action->time), action->msg);
+               action->timeout, daymon, action->msg);
         actno = act_iter_next();
     }
 }

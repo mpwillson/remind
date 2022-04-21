@@ -7,17 +7,25 @@ A C command line program to issue reminders for actions and events.
     remind  [-a] [-c colour_pairs] [-D n[,n] ...] [-d date] [-e]
             [-f filename] [-h] [-i] [-L] [-l] [-m n[,n] ...] [-P pointer]
             [-p] [-q] [-r repeat] [-s] [-t timeout]
-            [-u urgency] [-w warning] [-X n[,n] ...]
+            [-u urgency] [-v] [-w warning] [-X n[,n] ...]
             [message]
 
 See remind(1) man page for more.
 
 ## ChangeLog
 
+### 1.3.3
+
+* Don't prevent definition of actions in the past.
+* Don't include year for exported periodic actions.
+* Add -v (print version) option.
+
 ### 1.3.2
 
 * Fix incorrect calculation of time to event when crossing DST
-  boundary.
+  boundary. This defect affects dates defined for periodic actions in
+  the remind database file. Export and rebuild the database file to
+  fix.
 
 ### 1.3.1
 

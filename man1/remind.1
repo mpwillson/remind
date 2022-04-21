@@ -24,6 +24,7 @@
 .Op Fl s
 .Op Fl t Ar TIMEOUT
 .Op Fl u Ar URGENCY
+.Op Fl v
 .Op Fl w Ar WARNING
 .Op Fl X Ar n[,n] ...
 .Op message
@@ -248,6 +249,10 @@ argument is specified for reporting,
 only actions of that urgency are reported.
 Zero is a valid urgency, and is the only time the background actions
 will be displayed.
+.El
+.Bl -tag -width Ds
+.It Fl v
+Print version number.
 .El
 .Bl -tag -width Ds
 .It Fl w Ar WARNING

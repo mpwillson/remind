@@ -58,8 +58,7 @@ time_t date_parse(char *s, int eod)
         }
     }
     if ((date->tm_mday < 1 || date->tm_mday > 31) ||
-        (date->tm_mon < 1 || date->tm_mon > 12) ||
-        (date->tm_year < now_year)) return -1; /* malformed date */
+        (date->tm_mon < 1 || date->tm_mon > 12)) return -1; /* malformed date */
     date->tm_mon--;
     /* let mktime figure out if date is dst */
     date->tm_isdst = -1;

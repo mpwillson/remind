@@ -4,7 +4,8 @@ OBJS=datafile.o date.o remind.o
 INSTALL_DIR=/usr/local
 MAN_DIR=${INSTALL_DIR}/man/man1
 LDLIBS=-lm
-CCFLAGS=-g
+CFLAGS=-g
+CFLAGS+=-DGIT_VERSION=\"$(shell git describe --tags --always --dirty)\"
 
 all: remind man1/remind.1.gz
 

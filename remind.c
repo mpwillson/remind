@@ -7,7 +7,7 @@
         remind  [-a] [-c colour_pairs] [-d date] [-D n[,n] ...] [-e]
                 [-f filename] [-h] [-i] [-l] [-L] [-m n[,n] ...] [-p]
                 [-P pointer] [-q] [-r repeat] [-s] [-t timeout]
-                [-u urgency] [-w warning] [-X n[,n] ...]
+                [-u urgency] [-v] [-w warning] [-X n[,n] ...]
                 [message]
 
     See remind(1) man page for more.
@@ -64,6 +64,7 @@ struct st_params {
     bool quiet;
     char* hilite;
     int pointer;
+    bool version;
     struct st_nlist* actlist;
 };
 
@@ -218,6 +219,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     /* set defaults */
     params->cmd = CMD_DISPLAY;
     params->quiet = false;
+    params->version = false;
     params->urgency = -1;
     params->colour_set = false;
     params->set_type = ACT_PERIODIC|ACT_STANDARD;
@@ -333,6 +335,9 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                     }
                     newact->urgency = params->urgency;
                     --argc;
+                    break;
+                case 'v':
+                    params->version = true;
                     break;
                 case 'w':
                     newact->warning = atoi(*++argv);
@@ -731,6 +736,10 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
     if (params->cmd != CMD_INIT && !rem_open(params->filename))
         error(ABORT,error_msg[rem_error()],params->filename);
     if (params->colour_set) rem_set_hilite(params->ucol);
+
+    if (params->version) {
+        printf("remind %s\n",GIT_VERSION);
+    }
 
     switch (params->cmd) {
         case CMD_DEFINE:

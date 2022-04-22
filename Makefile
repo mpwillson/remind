@@ -2,6 +2,7 @@
 
 OBJS=datafile.o date.o remind.o
 INSTALL_DIR=/usr/local
+BIN_DIR=${INSTALL_DIR}/bin
 MAN_DIR=${INSTALL_DIR}/man/man1
 LDLIBS=-lm
 CFLAGS=-g
@@ -23,7 +24,7 @@ clean:
 		test/test.results
 
 install:
-	cp remind ${INSTALL_DIR}/bin
+	cp remind ${BIN_DIR}
 	mkdir -p ${MAN_DIR}
 	cp man1/remind.1.gz ${MAN_DIR}
 

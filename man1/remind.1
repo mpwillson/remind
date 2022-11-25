@@ -8,7 +8,7 @@
 .Nm remind
 .Op Fl a
 .Op Fl c Ar COLOUR_PAIRS
-.Op Fl D Ar n[,n] ...
+.Op Fl D Ar n[,n ...]
 .Op Fl d Ar DATE
 .Op Fl e
 .Op Fl f Ar FILENAME
@@ -16,7 +16,7 @@
 .Op Fl i
 .Op Fl L
 .Op Fl l
-.Op Fl m Ar n[,n] ...
+.Op Fl m Ar n[,n ...]
 .Op Fl P Ar POINTER
 .Op Fl p
 .Op Fl q
@@ -26,7 +26,7 @@
 .Op Fl u Ar URGENCY
 .Op Fl v
 .Op Fl w Ar WARNING
-.Op Fl X Ar n[,n] ...
+.Op Fl X Ar n[,n ...]
 .Op message
 .Sh DESCRIPTION
 .Nm remind
@@ -74,7 +74,7 @@ e.g. during
 file initialisation or reporting.
 .El
 .Bl -tag -width Ds
-.It Fl D Ar n[,n] ...
+.It Fl D Ar n[,n ...]
 Deletes an action or actions, identified by their action numbers.
 Each action is given a unique number which must be specified in order
 to delete an action.
@@ -148,7 +148,7 @@ and will restrict the report to standard or periodic actions
 respectively.
 .El
 .Bl -tag -width Ds
-.It Fl m Ar n[,n] ...
+.It Fl m Ar n[,n ...]
 Modifies the action(s) identifed by
 .Ar n .
 The urgency, warning, timeout, date, repeat and message may be modifed.
@@ -260,7 +260,7 @@ Sets the number of days warning required for a periodic
 action.  Default is 5 days.
 .El
 .Bl -tag -width Ds
-.It Fl X Ar n[,n] ...
+.It Fl X Ar n[,n ...]
 Prints the contents of the action(s) specified by
 .Ar n .
 The output includes the next_action pointer.

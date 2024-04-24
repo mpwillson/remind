@@ -49,13 +49,11 @@ standard) action is defined.  The
 .Fl d
 option, together with a message, or a message of which the
 first word is a date, defines a date-based (periodic) action.
-.Sh OPTIONS
+.Ss Options
 .Bl -tag -width Ds
 .It Fl a
 Issue reminders for both standard and periodic actions.  This is the
 default if no options, or message, are specified.
-.El
-.Bl -tag -width Ds
 .It Fl c Ar f,b f,b f,b f,b
 Sets the urgency colour pairs for colour highlighting.
 There are four urgency levels, 1, the highest, to 4, the lowest.
@@ -72,8 +70,6 @@ argument may be specified with any invokation of remind,
 e.g. during
 .Pa remind.db
 file initialisation or reporting.
-.El
-.Bl -tag -width Ds
 .It Fl D Ar n[,n ...]
 Deletes an action or actions, identified by their action numbers.
 Each action is given a unique number which must be specified in order
@@ -81,27 +77,19 @@ to delete an action.
 If the
 .Fl q
 switch is specified, the contents of the action are nulled.
-.El
-.Bl -tag -width Ds
 .It Fl d Ar DATE
 Sets the date for an action.
 A
 .Ar DATE
 must be in the form dd/mm[/yyyy].
-.El
-.Bl -tag -width Ds
 .It Fl e
 Writes, on stdout, the remind commands necessary to build the remind
 file.
 Output may be re-directed to a file.
-.El
-.Bl -tag -width Ds
 .It Fl f
 Sets remind database file name.
 The default is
 .Pa remind.db
-.El
-.Bl -tag -width Ds
 .It Fl h
 Highlight actions, based on
 .Fl u
@@ -110,8 +98,6 @@ Highlight actions, based on
 (colour) settings.
 Highlighting uses ANSI escape sequences and colours.
 If omitted, no highlighting is performed.
-.El
-.Bl -tag -width Ds
 .It Fl i
 Initialises the
 .Pa remind.db
@@ -123,15 +109,11 @@ exists, you will be asked to confirm initialisation.
 (The
 .Fl q
 switch will cause this confirmation question to be omitted).
-.El
-.Bl -tag -width Ds
 .It Fl L
 As -l (see below), but also displays the contents of the
 .Pa remind.db
 file header record, and all records that are on the
 free list.
-.El
-.Bl -tag -width Ds
 .It Fl l
 Lists the contents of the
 .Pa remind.db
@@ -146,16 +128,12 @@ or
 options may be specified
 and will restrict the report to standard or periodic actions
 respectively.
-.El
-.Bl -tag -width Ds
 .It Fl m Ar n[,n ...]
 Modifies the action(s) identifed by
 .Ar n .
 The urgency, warning, timeout, date, repeat and message may be modifed.
 The new values should be specified by using the appropriate
 argument (and/or a message).
-.El
-.Bl -tag -width Ds
 .It Fl P Ar POINTER
 Changes the next_action pointer in an action to the integer value
 .Ar POINTER .
@@ -165,13 +143,9 @@ argument.
 Misuse can seriously damage the
 .Pa remind.db
 file.
-.El
-.Bl -tag -width Ds
 .It Fl p
 Reports on periodic actions only.
 If a message is present, forces definition of a periodic action.
-.El
-.Bl -tag -width Ds
 .It Fl q
 Causes remind to omit the message confirming the creation of an
 action.
@@ -179,8 +153,6 @@ Suppresses background actions message when reporting standard actions.
 Also suppresses confirmation question when creating a remind file and the file
 already exists.
 Lastly, when deleting an action, will cause the action contents to be nulled.
-.El
-.Bl -tag -width Ds
 .It Fl r Ar REPEAT
 Sets the type of repetition for a periodic action. The
 .Ar REPEAT
@@ -215,16 +187,12 @@ If
 .Ar M
 is omitted, default is 1.
 .El
-.El
-.Bl -tag -width Ds
 .It Fl s
 Reports on standard actions only.
 If specified when defining
 a new action, this flag will force a standard action
 definition, even if a date is given.
 This allows the creation of delayed standard actions.
-.El
-.Bl -tag -width Ds
 .It Fl t Ar TIMEOUT
 Sets the timeout for an action.
 The timeout value is in days.
@@ -232,8 +200,6 @@ The timeout value is in days.
 will automatically delete an action
 .Ar TIMEOUT
 days after its defined date.
-.El
-.Bl -tag -width Ds
 .It Fl u Ar URGENCY
 This argument serves two purposes.
 Firstly, it sets the urgency when
@@ -249,23 +215,15 @@ argument is specified for reporting,
 only actions of that urgency are reported.
 Zero is a valid urgency, and is the only time the background actions
 will be displayed.
-.El
-.Bl -tag -width Ds
 .It Fl v
 Print version number.
-.El
-.Bl -tag -width Ds
 .It Fl w Ar WARNING
 Sets the number of days warning required for a periodic
 action.  Default is 5 days.
-.El
-.Bl -tag -width Ds
 .It Fl X Ar n[,n ...]
 Prints the contents of the action(s) specified by
 .Ar n .
 The output includes the next_action pointer.
-.El
-.Bl -tag -width Ds
 .It Ar message
 Sets the message to be issued for the action.
 Multiple spaces between words  will be reduced to one.

@@ -1,14 +1,14 @@
 /*  remind:   reminder program
 
     NAME
-        remind - a reminder program
+    remind - a reminder program
 
     SYNOPSIS
-        remind  [-a] [-c colour_pairs] [-d date] [-D n[,n] ...] [-e]
-                [-f filename] [-h] [-i] [-l] [-L] [-m n[,n] ...] [-p]
-                [-P pointer] [-q] [-r repeat] [-s] [-t timeout]
-                [-u urgency] [-v] [-w warning] [-X n[,n] ...]
-                [message]
+    remind  [-a] [-c colour_pairs] [-d date] [-D n[,n] ...] [-e]
+    [-f filename] [-h] [-i] [-l] [-L] [-m n[,n] ...] [-p]
+    [-P pointer] [-q] [-r repeat] [-s] [-t timeout]
+    [-u urgency] [-v] [-w warning] [-X n[,n] ...]
+    [message]
 
     See remind(1) man page for more.
 */
@@ -184,22 +184,22 @@ bool parse_repeat(char* rstr, enum repeat_type* type, int* day, int* nday)
     *nday = 1; /* default */
     ntoks = sscanf(rstr,"%c%d,%d",&typech,day,nday);
     switch (typech) {
-        case 'y':
-            *type = RT_YEAR;
-            break;
-        case 'm':
-            *type = RT_MONTH;
-            break;
-        case 'w':
-            *type = RT_WEEK;
-            if (ntoks < 2) return false;
-            break;
-        case 'n':
-            *type = RT_MONTH_WEEK;
-            if (ntoks < 2) return false;
-            break;
-        default:
-            return false;
+    case 'y':
+        *type = RT_YEAR;
+        break;
+    case 'm':
+        *type = RT_MONTH;
+        break;
+    case 'w':
+        *type = RT_WEEK;
+        if (ntoks < 2) return false;
+        break;
+    case 'n':
+        *type = RT_MONTH_WEEK;
+        if (ntoks < 2) return false;
+        break;
+    default:
+        return false;
     }
     return true;
 }
@@ -245,113 +245,113 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                 error(ABORT,"switch -%c requires argument",*s);
             }
             switch (*s) {
-                case 'a':
-                    params->set_type = ACT_PERIODIC|ACT_STANDARD;
-                    break;
-                case 'c':
-                    for (int i=0;i<URGCOL;i+=2) {
-                        nargs = sscanf(*++argv,"%d,%d",&(params->ucol[i]),
-                                       &(params->ucol[i+1]));
-                        --argc;
-                        if (nargs == EOF || nargs != 2)
-                            error(ABORT,"bad colour pair");
-                    }
-                    params->colour_set = true;
-                    break;
-                case 'd':
-                    if ((newact->time = date_parse(*++argv,TIME_EOD)) <= 0) {
-                        error(ABORT,"bad date format");
-                    }
-                    if (params->set_type != ACT_STANDARD)
-                        newact->type = ACT_PERIODIC;
+            case 'a':
+                params->set_type = ACT_PERIODIC|ACT_STANDARD;
+                break;
+            case 'c':
+                for (int i=0;i<URGCOL;i+=2) {
+                    nargs = sscanf(*++argv,"%d,%d",&(params->ucol[i]),
+                                   &(params->ucol[i+1]));
                     --argc;
-                    break;
-                case 'D':
-                    params->actlist = parse_int_list(*++argv);
-                    if (!params->actlist) error(ABORT,"bad message list");
-                    params->cmd = CMD_DELETE;
-                    --argc;
-                    break;
-                case 'e':
-                    params->cmd = CMD_EXPORT;
-                    break;
-                case 'f':
-                    params->filename = *++argv;
-                    --argc;
-                    break;
-                case 'h':
-                    /* set highlight off sequence */
-                    params->hilite = "\033[0m";
-                    break;
-                case 'i':
-                    params->cmd = CMD_INIT;
-                    break;
-                case 'l':
-                    params->cmd = CMD_LIST;
-                    break;
-                case 'L':
-                    params->cmd = CMD_LIST_HEADER;
-                    break;
-                case 'm':
-                    params->actlist = parse_int_list(*++argv);
-                    if (!params->actlist) error(ABORT,"bad message list");
-                    params->cmd = CMD_MODIFY;
-                    params->quiet = true; /* silence on redefined action */
-                    --argc;
-                    break;
-                case 'p':
+                    if (nargs == EOF || nargs != 2)
+                        error(ABORT,"bad colour pair");
+                }
+                params->colour_set = true;
+                break;
+            case 'd':
+                if ((newact->time = date_parse(*++argv,TIME_EOD)) <= 0) {
+                    error(ABORT,"bad date format");
+                }
+                if (params->set_type != ACT_STANDARD)
                     newact->type = ACT_PERIODIC;
-                    params->set_type = ACT_PERIODIC;
-                    break;
-                case 'P':
-                    params->pointer = atoi(*++argv);
-                    params->cmd = CMD_MOD_POINTER;
-                    --argc;
-                    break;
-                case 'q':
-                    params->quiet = true;
-                    break;
-                case 'r':
-                    if (!parse_repeat(*++argv,&(newact->repeat.type),
-                                      &(newact->repeat.day),
-                                      &(newact->repeat.nday)))
-                        error(ABORT,"bad repeat option");
-                    --argc;
-                    newact->type = ACT_PERIODIC;
-                    break;
-                case 's':
-                    newact->type = ACT_STANDARD;
-                    params->set_type = ACT_STANDARD;
-                    break;
-                case 't':
-                    newact->timeout = atoi(*++argv);
-                    if (newact->timeout < 0) error(ABORT,"bad timeout value");
-                    --argc;
-                    break;
-                case 'u':
-                    params->urgency = atoi(*++argv);
-                    if (params->urgency < 0 || params->urgency > 4) {
-                        error(ABORT,"bad urgency value");
-                    }
-                    newact->urgency = params->urgency;
-                    --argc;
-                    break;
-                case 'v':
-                    params->version = true;
-                    break;
-                case 'w':
-                    newact->warning = atoi(*++argv);
-                    if (newact->warning < 0 ) error(ABORT,"bad warning value");
-                    --argc;
-                    break;
-                case 'X':
-                    params->actlist = parse_int_list(*++argv);
-                    if (!params->actlist) error(ABORT,"bad dump list");
-                    --argc;
-                    params->cmd = CMD_DUMP;
-                    break;
-                default:
-                    error(ABORT,"illegal option \"-%c\"\n",*s);
+                --argc;
+                break;
+            case 'D':
+                params->actlist = parse_int_list(*++argv);
+                if (!params->actlist) error(ABORT,"bad message list");
+                params->cmd = CMD_DELETE;
+                --argc;
+                break;
+            case 'e':
+                params->cmd = CMD_EXPORT;
+                break;
+            case 'f':
+                params->filename = *++argv;
+                --argc;
+                break;
+            case 'h':
+                /* set highlight off sequence */
+                params->hilite = "\033[0m";
+                break;
+            case 'i':
+                params->cmd = CMD_INIT;
+                break;
+            case 'l':
+                params->cmd = CMD_LIST;
+                break;
+            case 'L':
+                params->cmd = CMD_LIST_HEADER;
+                break;
+            case 'm':
+                params->actlist = parse_int_list(*++argv);
+                if (!params->actlist) error(ABORT,"bad message list");
+                params->cmd = CMD_MODIFY;
+                params->quiet = true; /* silence on redefined action */
+                --argc;
+                break;
+            case 'p':
+                newact->type = ACT_PERIODIC;
+                params->set_type = ACT_PERIODIC;
+                break;
+            case 'P':
+                params->pointer = atoi(*++argv);
+                params->cmd = CMD_MOD_POINTER;
+                --argc;
+                break;
+            case 'q':
+                params->quiet = true;
+                break;
+            case 'r':
+                if (!parse_repeat(*++argv,&(newact->repeat.type),
+                                  &(newact->repeat.day),
+                                  &(newact->repeat.nday)))
+                    error(ABORT,"bad repeat option");
+                --argc;
+                newact->type = ACT_PERIODIC;
+                break;
+            case 's':
+                newact->type = ACT_STANDARD;
+                params->set_type = ACT_STANDARD;
+                break;
+            case 't':
+                newact->timeout = atoi(*++argv);
+                if (newact->timeout < 0) error(ABORT,"bad timeout value");
+                --argc;
+                break;
+            case 'u':
+                params->urgency = atoi(*++argv);
+                if (params->urgency < 0 || params->urgency > 4) {
+                    error(ABORT,"bad urgency value");
+                }
+                newact->urgency = params->urgency;
+                --argc;
+                break;
+            case 'v':
+                params->version = true;
+                break;
+            case 'w':
+                newact->warning = atoi(*++argv);
+                if (newact->warning < 0 ) error(ABORT,"bad warning value");
+                --argc;
+                break;
+            case 'X':
+                params->actlist = parse_int_list(*++argv);
+                if (!params->actlist) error(ABORT,"bad dump list");
+                --argc;
+                params->cmd = CMD_DUMP;
+                break;
+            default:
+                error(ABORT,"illegal option \"-%c\"\n",*s);
             }
         }
     }
@@ -428,48 +428,48 @@ time_t make_active_time(ACTREC* action)
 
     nowtime = date_now();
     switch (action->repeat.type) {
-        case RT_YEAR:
-            event_time = date_make_current(action->time,YEAR_ONLY);
-            break;
-        case RT_MONTH:
-            event_time = date_make_current(action->time,YEAR_AND_MONTH);
-            break;
-        case RT_WEEK:
-            delta = difftime(nowtime,action->time);
-            if (delta < 0) {
-                /* action time is in the future; just return it */
-                event_time = action->time;
+    case RT_YEAR:
+        event_time = date_make_current(action->time,YEAR_ONLY);
+        break;
+    case RT_MONTH:
+        event_time = date_make_current(action->time,YEAR_AND_MONTH);
+        break;
+    case RT_WEEK:
+        delta = difftime(nowtime,action->time);
+        if (delta < 0) {
+            /* action time is in the future; just return it */
+            event_time = action->time;
+        }
+        else {
+            /* compute next event time */
+            period = (action->repeat.nday==0?1:action->repeat.nday) * 7 *
+                SECSPERDAY;
+            delta = ceil(delta / SECSPERDAY) * SECSPERDAY;
+            event_time = nowtime + period - ((int) delta)%period;
+        }
+        break;
+    case RT_MONTH_WEEK:
+        ev_tm = localtime(&nowtime);
+        now_mon = ev_tm->tm_mon;
+        now_mday = ev_tm->tm_mday;
+        ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon);
+        if (ev_tm->tm_mon > now_mon) {
+            /* calculated event day next month, look for last wday
+             * in current month */
+            while (ev_tm->tm_mon > now_mon) {
+                ev_tm->tm_mday -= 7;
+                event_time = mktime(ev_tm);
             }
-            else {
-                /* compute next event time */
-                period = (action->repeat.nday==0?1:action->repeat.nday) * 7 *
-                    SECSPERDAY;
-                delta = ceil(delta / SECSPERDAY) * SECSPERDAY;
-                event_time = nowtime + period - ((int) delta)%period;
-            }
-            break;
-        case RT_MONTH_WEEK:
-            ev_tm = localtime(&nowtime);
-            now_mon = ev_tm->tm_mon;
-            now_mday = ev_tm->tm_mday;
-            ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon);
-            if (ev_tm->tm_mon > now_mon) {
-                /* calculated event day next month, look for last wday
-                 * in current month */
-                while (ev_tm->tm_mon > now_mon) {
-                    ev_tm->tm_mday -= 7;
-                    event_time = mktime(ev_tm);
-                }
-            }
-            else if (ev_tm->tm_mday < now_mday) {
-                /* current day is later than this month's occurrence;
-                 * check next month */
-                ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon+1);
-            }
-            event_time = mktime(ev_tm);
-            break;
-        default:
-            error(ABORT,"invalid repeat type found: %d",action->repeat.type);
+        }
+        else if (ev_tm->tm_mday < now_mday) {
+            /* current day is later than this month's occurrence;
+             * check next month */
+            ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon+1);
+        }
+        event_time = mktime(ev_tm);
+        break;
+    default:
+        error(ABORT,"invalid repeat type found: %d",action->repeat.type);
     }
     return event_time;
 }
@@ -510,37 +510,37 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
         }
         else {
             switch (type) {
-                case ACT_STANDARD:
-                    if ((urgency < 0 ||
-                         (urgency >= 0 && urgency == action->urgency)) &&
-                        difftime(date_now(),action->time) > -SECSPERDAY) {
-                        if (action->urgency == 0) action->urgency = 4;
-                        printf("%s[%03d] %s%s\n",
-                               hilite_on(action->urgency,hilite), actno,
-                               action->msg,hilite);
-                    }
-                    break;
-                case ACT_PERIODIC:
-                    event_time = make_active_time(action);
-                    delta = difftime(event_time,date_now());
-                    if (delta > 0 && delta <= (action->warning+1)*SECSPERDAY &&
-                        (urgency < 0 ||
-                         (urgency >= 0 && urgency == action->urgency))) {
-                        delta_days = floor(delta/SECSPERDAY);
-                        printf("%s[%03d] [%s]",
-                               hilite_on(action->urgency, hilite),
-                               actno, date_str(event_time));
-                        if (delta_days == 1)
-                            printf(" (tomorrow) ");
-                        else if (delta_days == 0)
-                            printf(" (today) ");
-                        else
-                            printf(" (%2d days) ",delta_days);
-                        printf("%s%s\n",action->msg,hilite);
-                    }
-                    break;
-                default:
-                    error(ABORT,"bad action type: %d",type);
+            case ACT_STANDARD:
+                if ((urgency < 0 ||
+                     (urgency >= 0 && urgency == action->urgency)) &&
+                    difftime(date_now(),action->time) > -SECSPERDAY) {
+                    if (action->urgency == 0) action->urgency = 4;
+                    printf("%s[%03d] %s%s\n",
+                           hilite_on(action->urgency,hilite), actno,
+                           action->msg,hilite);
+                }
+                break;
+            case ACT_PERIODIC:
+                event_time = make_active_time(action);
+                delta = difftime(event_time,date_now());
+                if (delta > 0 && delta <= (action->warning+1)*SECSPERDAY &&
+                    (urgency < 0 ||
+                     (urgency >= 0 && urgency == action->urgency))) {
+                    delta_days = floor(delta/SECSPERDAY);
+                    printf("%s[%03d] [%s]",
+                           hilite_on(action->urgency, hilite),
+                           actno, date_str(event_time));
+                    if (delta_days == 1)
+                        printf(" (tomorrow) ");
+                    else if (delta_days == 0)
+                        printf(" (today) ");
+                    else
+                        printf(" (%2d days) ",delta_days);
+                    printf("%s%s\n",action->msg,hilite);
+                }
+                break;
+            default:
+                error(ABORT,"bad action type: %d",type);
             }
         }
         actno = act_iter_next();
@@ -549,9 +549,9 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
         char *typestr = (type==ACT_STANDARD?"standard":"periodic");
         if (nhidden == 1)
             printf(">>>>> There is one background %s action\n",typestr);
-       else
-           printf(">>>>> There are %d background %s actions\n",nhidden,
-                  typestr);
+        else
+            printf(">>>>> There are %d background %s actions\n",nhidden,
+                   typestr);
     }
     return;
 }
@@ -742,60 +742,60 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
     }
 
     switch (params->cmd) {
-        case CMD_DEFINE:
-            define_action(newact,params->quiet);
-            break;
-        case CMD_DELETE:
-            actno = params->actlist;
-            while (actno != NULL) {
-                delete_action(actno->n, params->quiet);
-                actno = actno->next;
-            }
-            break;
-        case CMD_DISPLAY:
-            if (params->set_type & ACT_PERIODIC) {
-                display(ACT_PERIODIC, params->urgency, params->quiet,
-                        params->hilite);
-            }
-            if (params->set_type & ACT_STANDARD) {
-                display(ACT_STANDARD, params->urgency, params->quiet,
-                        params->hilite);
-            }
-            break;
-        case CMD_DUMP:
-            actno = params->actlist;
-            while (actno != NULL) {
-                dump_action(actno->n);
-                actno = actno->next;
-            }
-            break;
-        case CMD_EXPORT:
-            export(params->filename);
-            break;
-        case CMD_INIT:
-            create_file(params->filename, params->ucol,
-                               params->quiet);
-            break;
-        case CMD_LIST:
-        case CMD_LIST_HEADER:
-            list_actions(params->cmd,params->set_type);
-            break;
-        case CMD_MODIFY:
-            actno = params->actlist;
-            while (actno != NULL) {
-                modify_action(actno->n,newact);
-                actno = actno->next;
-            }
-            break;
-        case CMD_MOD_POINTER:
-            actno = params->actlist;
-            while (actno != NULL) {
-                modify_action_pointer(actno->n,params->pointer);
-                actno = actno->next;
-            }
-            break;
-        default:
-            error(ABORT,"internal command error: %d",params->cmd);
+    case CMD_DEFINE:
+        define_action(newact,params->quiet);
+        break;
+    case CMD_DELETE:
+        actno = params->actlist;
+        while (actno != NULL) {
+            delete_action(actno->n, params->quiet);
+            actno = actno->next;
+        }
+        break;
+    case CMD_DISPLAY:
+        if (params->set_type & ACT_PERIODIC) {
+            display(ACT_PERIODIC, params->urgency, params->quiet,
+                    params->hilite);
+        }
+        if (params->set_type & ACT_STANDARD) {
+            display(ACT_STANDARD, params->urgency, params->quiet,
+                    params->hilite);
+        }
+        break;
+    case CMD_DUMP:
+        actno = params->actlist;
+        while (actno != NULL) {
+            dump_action(actno->n);
+            actno = actno->next;
+        }
+        break;
+    case CMD_EXPORT:
+        export(params->filename);
+        break;
+    case CMD_INIT:
+        create_file(params->filename, params->ucol,
+                    params->quiet);
+        break;
+    case CMD_LIST:
+    case CMD_LIST_HEADER:
+        list_actions(params->cmd,params->set_type);
+        break;
+    case CMD_MODIFY:
+        actno = params->actlist;
+        while (actno != NULL) {
+            modify_action(actno->n,newact);
+            actno = actno->next;
+        }
+        break;
+    case CMD_MOD_POINTER:
+        actno = params->actlist;
+        while (actno != NULL) {
+            modify_action_pointer(actno->n,params->pointer);
+            actno = actno->next;
+        }
+        break;
+    default:
+        error(ABORT,"internal command error: %d",params->cmd);
     }
     if (rem_cls() == EOF) error(ABORT,"close failed: %s",params->filename);
     if ((errno = rem_error()) != 0) error(ABORT,error_msg[errno],0);

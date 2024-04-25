@@ -4,8 +4,9 @@ remind
 \#*
 \.\#*
 *.gz
-remind.html
 remind.db
 test/test.results
 TAGS
 tags
+man1/remind.1
+man1/remind.html

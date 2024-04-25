@@ -1,5 +1,6 @@
 .PHONY: clean install deinstall release html test
 
+NAME=remind
 OBJS=datafile.o date.o remind.o
 INSTALL_DIR=/usr/local
 BIN_DIR=${INSTALL_DIR}/bin
@@ -16,12 +17,9 @@ datafile.o:	datafile.h
 
 date.o: date.h
 
-man1/remind.1.gz: man1/remind.1
-	gzip -c man1/remind.1 >man1/remind.1.gz
-
 clean:
-	rm -f remind *.o man1/remind.1.gz remind.html remind*.tar.gz \
-		test/test.results
+	rm -f remind *.o man1/remind.1.gz man1/remind.1 remind.html \
+		remind*.tar.gz test/test.results
 
 install:
 	cp remind ${BIN_DIR}
@@ -35,8 +33,8 @@ release:
 	@-if [ v${version} = v ]; then \
 		echo Please specify version required \(version=x.x\); \
 	else \
-		git archive --format=tar --prefix=remind-${version}/ v${version} | \
-			gzip >remind-${version}.tar.gz; \
+		git archive --format=tar --prefix=remind-${version}/ \
+			v${version} | gzip >remind-${version}.tar.gz; \
 		if [ $$? = 0 ]; then \
 			echo remind-${version}.tar.gz created; \
 		else \
@@ -45,8 +43,15 @@ release:
 	fi
 
 html:
-	mandoc -O fragment -T html man1/remind.1 >remind.html
+	mandoc -O fragment -Thtml man1/remind.1 >man1/remind.html
 
 test:
 	sh test/test.sh >test/test.results 2>&1
 	diff -u test/gold.results test/test.results
+
+man1/remind.1:	man1/remind.in.1
+	mandoc -Tlint $<
+	cp $< $@
+
+man1/remind.1.gz: man1/remind.1
+	gzip -c man1/remind.1 >man1/remind.1.gz

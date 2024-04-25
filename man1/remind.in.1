@@ -1,4 +1,4 @@
-.Dd May 15,2020
+.Dd May 15, 2020
 .Dt REMIND 1
 .Os
 .Sh NAME
@@ -8,7 +8,7 @@
 .Nm remind
 .Op Fl a
 .Op Fl c Ar COLOUR_PAIRS
-.Op Fl D Ar n[,n ...]
+.Op Fl D Ar n[,n ... ]
 .Op Fl d Ar DATE
 .Op Fl e
 .Op Fl f Ar FILENAME
@@ -16,7 +16,7 @@
 .Op Fl i
 .Op Fl L
 .Op Fl l
-.Op Fl m Ar n[,n ...]
+.Op Fl m Ar n[,n ... ]
 .Op Fl P Ar POINTER
 .Op Fl p
 .Op Fl q
@@ -26,7 +26,7 @@
 .Op Fl u Ar URGENCY
 .Op Fl v
 .Op Fl w Ar WARNING
-.Op Fl X Ar n[,n ...]
+.Op Fl X Ar n[,n ... ]
 .Op message
 .Sh DESCRIPTION
 .Nm remind
@@ -41,19 +41,19 @@ identification purposes.
 Remind records the information in a file, by default named
 .Pa remind.db
 in the current directory.
-If invoked with no options, or one of
-the reporting options (-alLps) it will produce the desired reminder
-report.
+If invoked with no options, or one of the reporting options (-alLps)
+it will produce the desired reminder report.
 If invoked with a message, and no date, an on-going (or
-standard) action is defined.  The
+standard) action is defined.
+The
 .Fl d
 option, together with a message, or a message of which the
 first word is a date, defines a date-based (periodic) action.
 .Ss Options
 .Bl -tag -width Ds
 .It Fl a
-Issue reminders for both standard and periodic actions.  This is the
-default if no options, or message, are specified.
+Issue reminders for both standard and periodic actions.
+This is the default if no options, or message, are specified.
 .It Fl c Ar f,b f,b f,b f,b
 Sets the urgency colour pairs for colour highlighting.
 There are four urgency levels, 1, the highest, to 4, the lowest.
@@ -70,7 +70,7 @@ argument may be specified with any invokation of remind,
 e.g. during
 .Pa remind.db
 file initialisation or reporting.
-.It Fl D Ar n[,n ...]
+.It Fl D Ar n[,n ... ]
 Deletes an action or actions, identified by their action numbers.
 Each action is given a unique number which must be specified in order
 to delete an action.
@@ -128,7 +128,7 @@ or
 options may be specified
 and will restrict the report to standard or periodic actions
 respectively.
-.It Fl m Ar n[,n ...]
+.It Fl m Ar n[,n ... ]
 Modifies the action(s) identifed by
 .Ar n .
 The urgency, warning, timeout, date, repeat and message may be modifed.
@@ -154,10 +154,11 @@ Also suppresses confirmation question when creating a remind file and the file
 already exists.
 Lastly, when deleting an action, will cause the action contents to be nulled.
 .It Fl r Ar REPEAT
-Sets the type of repetition for a periodic action. The
+Sets the type of repetition for a periodic action.
+The
 .Ar REPEAT
 argument must take one of the following forms:
-.Bl -tag -compact -offset indent
+.Bl -tag -width Ds -compact -offset indent
 .It Ar y
 yearly (the default).
 .It Ar m
@@ -202,10 +203,9 @@ will automatically delete an action
 days after its defined date.
 .It Fl u Ar URGENCY
 This argument serves two purposes.
-Firstly, it sets the urgency when
-defining an action. Valid urgency values are zero to 4, inclusive.
-An action
-with zero urgency is known as a background action and will
+Firstly, it sets the urgency when defining an action.
+Valid urgency values are zero to 4, inclusive.
+An action with zero urgency is known as a background action and will
 not normally be reported, although the number of
 background actions that have been defined will be issued.
 The default urgency is 4.
@@ -219,8 +219,9 @@ will be displayed.
 Print version number.
 .It Fl w Ar WARNING
 Sets the number of days warning required for a periodic
-action.  Default is 5 days.
-.It Fl X Ar n[,n ...]
+action.
+Default is 5 days.
+.It Fl X Ar n[,n ... ]
 Prints the contents of the action(s) specified by
 .Ar n .
 The output includes the next_action pointer.
@@ -235,10 +236,10 @@ This permits the easy addition of leading and/or trailing text to
 an existing message.
 The message is limited to 80 characters and must follow all other
 arguments.
+.El
 .Sh ENVIRONMENT
 The following environment variables affect the execution of
 .Nm remind
-.El
 .Bl -tag -width Ds
 .It Ev REMIND_FILE
 Sets the pathname of the
@@ -253,12 +254,14 @@ command switch.
 Sets the effective execution time of
 .Nm remind .
 Value must of the form dd/mm[/yyyy].
+.El
 .Sh FILES
 .Nm remind
-stores actions in a file.  The default name is
+stores actions in a file.
+The default name is
 .Pa remind.db ,
-located in the current working directory.  This default may be
-overridden by the
+located in the current working directory.
+This default may be overridden by the
 .Ar REMIND_FILE
 environment variable or by specifying the
 .Fl f
@@ -290,7 +293,6 @@ To define some standard and periodic actions:
 .Dl remind -r n1,1 Team meeting on first Monday of every month
 .Dl remind -r w4,2 -w 2 Sales meeting every second Thursday
 .Sh BUGS
-.Pp
 Warning period includes weekends.
 There should be an option to ignore non-working days when calculating
 when to issue a reminder

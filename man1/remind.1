@@ -1,0 +1,298 @@
+.Dd May 15, 2020
+.Dt REMIND 1
+.Os
+.Sh NAME
+.Nm remind
+.Nd sets and issues reminders
+.Sh SYNOPSIS
+.Nm remind
+.Op Fl a
+.Op Fl c Ar COLOUR_PAIRS
+.Op Fl D Ar n[,n ... ]
+.Op Fl d Ar DATE
+.Op Fl e
+.Op Fl f Ar FILENAME
+.Op Fl h
+.Op Fl i
+.Op Fl L
+.Op Fl l
+.Op Fl m Ar n[,n ... ]
+.Op Fl P Ar POINTER
+.Op Fl p
+.Op Fl q
+.Op Fl r Ar REPEAT
+.Op Fl s
+.Op Fl t Ar TIMEOUT
+.Op Fl u Ar URGENCY
+.Op Fl v
+.Op Fl w Ar WARNING
+.Op Fl X Ar n[,n ... ]
+.Op message
+.Sh DESCRIPTION
+.Nm remind
+enables the user to record both date-based and on-going actions, and to
+issue reminders that these actions are outstanding.
+Actions may be given an urgency, may be timed-out automatically after
+a set number of days, and, for date-based actions, may be given a
+user-specified number of days warning.
+.Pp
+When first defined, an action is assigned a unique number for
+identification purposes.
+Remind records the information in a file, by default named
+.Pa remind.db
+in the current directory.
+If invoked with no options, or one of the reporting options (-alLps)
+it will produce the desired reminder report.
+If invoked with a message, and no date, an on-going (or
+standard) action is defined.
+The
+.Fl d
+option, together with a message, or a message of which the
+first word is a date, defines a date-based (periodic) action.
+.Ss Options
+.Bl -tag -width Ds
+.It Fl a
+Issue reminders for both standard and periodic actions.
+This is the default if no options, or message, are specified.
+.It Fl c Ar f,b f,b f,b f,b
+Sets the urgency colour pairs for colour highlighting.
+There are four urgency levels, 1, the highest, to 4, the lowest.
+Each urgency is assigned a foreground and background colour (the
+default being white on black).
+All four colour pairs must be specified if the
+.Fl c
+argument is given.
+Colour pair codes are as defined by ANSI Select Graphic Rendition
+subset.
+The
+.Fl c
+argument may be specified with any invokation of remind,
+e.g. during
+.Pa remind.db
+file initialisation or reporting.
+.It Fl D Ar n[,n ... ]
+Deletes an action or actions, identified by their action numbers.
+Each action is given a unique number which must be specified in order
+to delete an action.
+If the
+.Fl q
+switch is specified, the contents of the action are nulled.
+.It Fl d Ar DATE
+Sets the date for an action.
+A
+.Ar DATE
+must be in the form dd/mm[/yyyy].
+.It Fl e
+Writes, on stdout, the remind commands necessary to build the remind
+file.
+Output may be re-directed to a file.
+.It Fl f
+Sets remind database file name.
+The default is
+.Pa remind.db
+.It Fl h
+Highlight actions, based on
+.Fl u
+(urgency) and
+.Fl c
+(colour) settings.
+Highlighting uses ANSI escape sequences and colours.
+If omitted, no highlighting is performed.
+.It Fl i
+Initialises the
+.Pa remind.db
+file.
+If the
+.Pa remind.db
+file already
+exists, you will be asked to confirm initialisation.
+(The
+.Fl q
+switch will cause this confirmation question to be omitted).
+.It Fl L
+As -l (see below), but also displays the contents of the
+.Pa remind.db
+file header record, and all records that are on the
+free list.
+.It Fl l
+Lists the contents of the
+.Pa remind.db
+file.
+The report is not urgency highlighted, and reports on the entire
+contents of the file (i.e. dates, warnings, urgencies,
+timeouts etc).
+The
+.Fl s
+or
+.Fl p
+options may be specified
+and will restrict the report to standard or periodic actions
+respectively.
+.It Fl m Ar n[,n ... ]
+Modifies the action(s) identifed by
+.Ar n .
+The urgency, warning, timeout, date, repeat and message may be modifed.
+The new values should be specified by using the appropriate
+argument (and/or a message).
+.It Fl P Ar POINTER
+Changes the next_action pointer in an action to the integer value
+.Ar POINTER .
+The action record to modify is selected by the -m
+argument.
+.Em CAUTION :
+Misuse can seriously damage the
+.Pa remind.db
+file.
+.It Fl p
+Reports on periodic actions only.
+If a message is present, forces definition of a periodic action.
+.It Fl q
+Causes remind to omit the message confirming the creation of an
+action.
+Suppresses background actions message when reporting standard actions.
+Also suppresses confirmation question when creating a remind file and the file
+already exists.
+Lastly, when deleting an action, will cause the action contents to be nulled.
+.It Fl r Ar REPEAT
+Sets the type of repetition for a periodic action.
+The
+.Ar REPEAT
+argument must take one of the following forms:
+.Bl -tag -width Ds -compact -offset indent
+.It Ar y
+yearly (the default).
+.It Ar m
+monthly, based on the day of the action date.
+.It Ar wN[,M]
+.Ar Nth
+weekday (0 is Sunday, 6 is Saturday) of every
+.Ar Mth
+week.
+If
+.Ar M
+is omitted, default is 1.
+This repeat will cause the date of the action to be adjusted to match
+.Ar N .
+.It Ar nN[,M]
+.Ar Mth
+occurrence of the
+.Ar Nth
+weekday in a month.
+If the
+.Ar Mth
+occurrence value is 5 or more, the due date will be the last
+occurrence of the
+.Ar Nth
+weekday in the month.
+If
+.Ar M
+is omitted, default is 1.
+.El
+.It Fl s
+Reports on standard actions only.
+If specified when defining
+a new action, this flag will force a standard action
+definition, even if a date is given.
+This allows the creation of delayed standard actions.
+.It Fl t Ar TIMEOUT
+Sets the timeout for an action.
+The timeout value is in days.
+.Nm remind
+will automatically delete an action
+.Ar TIMEOUT
+days after its defined date.
+.It Fl u Ar URGENCY
+This argument serves two purposes.
+Firstly, it sets the urgency when defining an action.
+Valid urgency values are zero to 4, inclusive.
+An action with zero urgency is known as a background action and will
+not normally be reported, although the number of
+background actions that have been defined will be issued.
+The default urgency is 4.
+Secondly, when the
+.Fl u
+argument is specified for reporting,
+only actions of that urgency are reported.
+Zero is a valid urgency, and is the only time the background actions
+will be displayed.
+.It Fl v
+Print version number.
+.It Fl w Ar WARNING
+Sets the number of days warning required for a periodic
+action.
+Default is 5 days.
+.It Fl X Ar n[,n ... ]
+Prints the contents of the action(s) specified by
+.Ar n .
+The output includes the next_action pointer.
+.It Ar message
+Sets the message to be issued for the action.
+Multiple spaces between words  will be reduced to one.
+If the first word in a message is in the date format (dd/mm[/yyyy]), a
+periodic action will be defined.
+During modification, if the message contains an ampersand (&), the
+existing message will be used in place of the ampersand.
+This permits the easy addition of leading and/or trailing text to
+an existing message.
+The message is limited to 80 characters and must follow all other
+arguments.
+.El
+.Sh ENVIRONMENT
+The following environment variables affect the execution of
+.Nm remind
+.Bl -tag -width Ds
+.It Ev REMIND_FILE
+Sets the pathname of the
+.Pa remind.db
+file.
+This setting is overridden by the
+.Fl f
+command switch.
+.El
+.Bl -tag -width Ds
+.It Ev REMIND_TIME
+Sets the effective execution time of
+.Nm remind .
+Value must of the form dd/mm[/yyyy].
+.El
+.Sh FILES
+.Nm remind
+stores actions in a file.
+The default name is
+.Pa remind.db ,
+located in the current working directory.
+This default may be overridden by the
+.Ar REMIND_FILE
+environment variable or by specifying the
+.Fl f
+command switch.
+.Pp
+Before any actions can be defined, a
+.Pa remind.db
+file must be created and initialised
+via the
+.Fl i
+command argument.
+The default remind data file name may be overridden through the
+.Fl f
+command switch.
+.Sh EXAMPLES
+To initialise a
+.Pa remind.db
+file:
+.Dl remind -i -c 37,41 37,44 30,47 37,40
+.Pp
+To define some standard and periodic actions:
+.Dl remind Call Fred re outline plan
+.Dl remind -u 1 Finish expense report!!
+.Dl remind -d 5/8 -t 1 Product meeting at head office
+.Dl remind 16/7 Wedding anniversary!!
+.Dl remind  -r m 1/1 Monthly report due
+.Dl remind -m 1 "& (7731829)"
+.Dl remind -sd 7/10 New reporting procedure commences
+.Dl remind -r n1,1 Team meeting on first Monday of every month
+.Dl remind -r w4,2 -w 2 Sales meeting every second Thursday
+.Sh BUGS
+Warning period includes weekends.
+There should be an option to ignore non-working days when calculating
+when to issue a reminder

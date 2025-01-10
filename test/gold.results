@@ -36,8 +36,8 @@ List actions
 [005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
 [006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
 [007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
-[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
-[009] 2 4  5 02/01/2030  0 y0,0 "Delayed standard action"
+[008] 1 1  7 04/01/2030  0 y0,0 "4th January periodic"
+[009] 2 4  7 02/01/2030  0 y0,0 "Delayed standard action"
 List actions with header
 P: 1  S: 9  F: 0  Num: 10 [37,40 37,40 37,40 37,40]
 [001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
@@ -47,8 +47,8 @@ P: 1  S: 9  F: 0  Num: 10 [37,40 37,40 37,40 37,40]
 [005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
 [006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
 [007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
-[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
-[009] 2 4  5 02/01/2030  0 y0,0 "Delayed standard action"
+[008] 1 1  7 04/01/2030  0 y0,0 "4th January periodic"
+[009] 2 4  7 02/01/2030  0 y0,0 "Delayed standard action"
 Delete delayed action
 P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
 [001] 1 4 25 01/01/2030  0 n1,1 "First Monday in the month"
@@ -58,8 +58,8 @@ P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
 [005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
 [006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
 [007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
-[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
-[009] 0 4  5 02/01/2030  0 y0,0 "Delayed standard action"
+[008] 1 1  7 04/01/2030  0 y0,0 "4th January periodic"
+[009] 0 4  7 02/01/2030  0 y0,0 "Delayed standard action"
 Delete free record
 remind: action [009] is on free list
 Modify free record
@@ -74,7 +74,7 @@ P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
 [005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
 [006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
 [007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
-[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[008] 1 1  7 04/01/2030  0 y0,0 "4th January periodic"
 [009] 0 0  0 01/01/1970  0 y0,0 "."
 Define standard action with timeout
 remind: action [009] defined
@@ -90,7 +90,7 @@ P: 1  S: 0  F: 9  Num: 10 [37,40 37,40 37,40 37,40]
 [005] 1 4 25 01/01/2030  0 n5,5 "Fifth Friday in the month"
 [006] 1 4 25 01/01/2030  0 n6,6 "Last Saturday in the month"
 [007] 1 4  8 01/01/2030  0 w2,1 "Every Tuesday"
-[008] 1 1  5 04/01/2030  0 y0,0 "4th January periodic"
+[008] 1 1  7 04/01/2030  0 y0,0 "4th January periodic"
 [009] 0 0  0 01/01/1970  0 y0,0 "."
 Re-initialise
 remind: initialise ./remind.db.  are you sure (y/n)? Urgencies
@@ -117,7 +117,6 @@ remind: action [006] defined
 remind: action [007] defined
 [007] [04/01/2030] ( 2 days) Every second Friday
 [006] [07/01/2030] ( 5 days) Every second Monday
-[005] [08/01/2030] ( 6 days) Every Tuesday
 Report on 9th Jan
 [007] [18/01/2030] ( 9 days) Every second Friday
 [006] [21/01/2030] (12 days) Every second Monday
@@ -133,18 +132,18 @@ remind: action [003] defined
 remind: action [004] defined
 remind: action [005] defined
 P: 1  S: 3  F: 0  Num: 6 [37,40 37,40 37,40 37,40]
-[001] 1 4  5 10/01/2030  0 y0,0 "Yearly, 10th January"
-[002] 1 4  5 10/01/2030  0 m0,1 "10th of every month"
-[003] 2 4  5 09/02/2030  0 y0,0 "A standard action"
-[004] 2 4  5 11/02/2030  0 y0,0 "A delayed standard action"
-[005] 1 4  7 12/02/2030  0 w2,1 "Every Tuesday"
+[001] 1 4  7 10/01/2030  0 y0,0 "Yearly, 10th January"
+[002] 1 4  7 10/01/2030  0 m0,1 "10th of every month"
+[003] 2 4  7 09/02/2030  0 y0,0 "A standard action"
+[004] 2 4  7 11/02/2030  0 y0,0 "A delayed standard action"
+[005] 1 4  5 12/02/2030  0 w2,1 "Every Tuesday"
 After re-creation
 P: 3  S: 1  F: 0  Num: 6 [37,40 37,40 37,40 37,40]
-[001] 2 4  5 09/02/2030  0 y0,0 "A standard action"
-[002] 2 4  5 11/02/2030  0 y0,0 "A delayed standard action"
-[003] 1 4  5 10/01/2030  0 y0,0 "Yearly, 10th January"
-[004] 1 4  5 10/01/2030  0 m0,1 "10th of every month"
-[005] 1 4  7 12/02/2030  0 w2,1 "Every Tuesday"
+[001] 2 4  7 09/02/2030  0 y0,0 "A standard action"
+[002] 2 4  7 11/02/2030  0 y0,0 "A delayed standard action"
+[003] 1 4  7 10/01/2030  0 y0,0 "Yearly, 10th January"
+[004] 1 4  7 10/01/2030  0 m0,1 "10th of every month"
+[005] 1 4  5 12/02/2030  0 w2,1 "Every Tuesday"
 [004] [10/02/2030] (tomorrow) 10th of every month
 [005] [12/02/2030] ( 3 days) Every Tuesday
 [001] A standard action
@@ -165,4 +164,5 @@ At 29/04/2030 - in DST
 At 30/03/2030 - one day before DST
 [003] [02/04/2030] ( 3 days) 2nd of every month
 At 26/10/2030 - one day before end DST
+[003] [02/11/2030] ( 7 days) 2nd of every month
 [004] [28/10/2030] ( 2 days) 28th of every month

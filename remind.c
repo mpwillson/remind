@@ -390,7 +390,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     if (params->cmd != CMD_MODIFY) {
         if (newact->timeout < 0) newact->timeout = 0;
         if (newact->urgency < 0 )newact->urgency = 4;
-        if (newact->warning < 0 ) newact->warning = 5;
+        if (newact->warning < 0 ) newact->warning = 7;
         if (newact->repeat.type == EOF) newact->repeat.type = RT_YEAR;
         if (newact->time == 0) newact->time = date_now_eod();
     }

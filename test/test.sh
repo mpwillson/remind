@@ -58,7 +58,7 @@ echo Urgencies
 ./remind
 ./remind -u 0
 echo Day of week repeats
-./remind -r w2,1 -w 7 Every Tuesday
+./remind -r w2,1 -w 5 Every Tuesday
 ./remind -r w1,2 -w 14 Every second Monday
 ./remind -r w5,2 -w 14 Every second Friday
 ./remind -p
@@ -75,7 +75,7 @@ REMIND_TIME=09/02/2030
 echo Export
 ./remind A standard action
 ./remind -s 11/2 A delayed standard action
-./remind -r w2,1 -w 7 Every Tuesday
+./remind -r w2,1 -w 5 Every Tuesday
 ./remind -L
 ./remind -e >/tmp/remind$$.sh
 sh /tmp/remind$$.sh

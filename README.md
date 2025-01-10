@@ -16,8 +16,8 @@ See remind(1) man page for more.
 
 ### 1.3.3
 
-* Don't prevent definition of actions in the past.
-* Don't include year for exported periodic actions.
+* Allow definition of actions in the past.
+* Remove redundant year in exported periodic actions.
 * Add -v (print version) option.
 
 ### 1.3.2

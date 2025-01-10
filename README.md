@@ -14,6 +14,11 @@ See remind(1) man page for more.
 
 ## ChangeLog
 
+### 1.3.4
+
+* Set default warning period to 7 days.
+* Add missing FILENAME argument to -f option in man page.
+
 ### 1.3.3
 
 * Allow definition of actions in the past.

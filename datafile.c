@@ -95,7 +95,7 @@ bool rem_create(char* filename, int ucol[]) {
     if (actfile) {
         header.phead=header.shead=header.fhead = 0;
         header.numrec = 1;
-        strcpy(header.magic,MAGIC);
+        strncpy(header.magic,MAGIC,sizeof(header.magic)-1);
         if (ucol) rem_set_hilite(ucol);
     }
     else {
@@ -217,7 +217,7 @@ int act_delete(int del_actno, bool nullify)
     int actno,last,current;
     ACTREC* activerec = &action;
     ACTREC save;
-    
+
     if (del_actno <= 0) {
         rem_error_code = RE_RECNO;
         return RE_RECNO;
@@ -270,7 +270,8 @@ int act_delete(int del_actno, bool nullify)
         activerec->urgency = 0;
         activerec->time = 0;
         activerec->timeout = 0;
-        strcpy(activerec->msg,".");
+        activerec->msg[0] = '.';
+        memset(activerec->msg+1,'\0',MSGSIZ);
     }
     if (rec_write(current,activerec) != 0) return current;
     header.fhead = current;

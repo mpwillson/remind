@@ -44,7 +44,7 @@ struct st_repeat {
 };
 
 struct st_remfile_hdr {
-    char magic[5];  /* remind file identifier */
+    char magic[8];  /* remind file identifier */
     int phead;      /* periodic action list pointer */
     int shead;      /* standard action list pointer */
     int fhead;      /* free list pointer */

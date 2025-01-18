@@ -220,7 +220,7 @@ Print version number.
 .It Fl w Ar WARNING
 Sets the number of days warning required for a periodic
 action.
-Default is 5 days.
+Default is 7 days.
 .It Fl X Ar n[,n ... ]
 Prints the contents of the action(s) specified by
 .Ar n .
@@ -293,6 +293,4 @@ To define some standard and periodic actions:
 .Dl remind -r n1,1 Team meeting on first Monday of every month
 .Dl remind -r w4,2 -w 2 Sales meeting every second Thursday
 .Sh BUGS
-Warning period includes weekends.
-There should be an option to ignore non-working days when calculating
-when to issue a reminder
+Many.

@@ -9,11 +9,17 @@ LDLIBS=-lm
 CFLAGS=-g
 CFLAGS+=-DGIT_VERSION=\"$(shell git describe --tags --always --dirty)\"
 
-${NAME}: ${OBJS}
+target: 	${NAME} man1/${NAME}.1
+
+${NAME}: 	${OBJS}
 
 datafile.o:	datafile.h
 
-date.o: date.h
+date.o: 	date.h
+
+man1/${NAME}.1: man1/${NAME}.in.1
+	mandoc -Tlint $<
+	cp $<  $@
 
 clean:
 	rm -f ${NAME} *.o  man1/${NAME}.html ${NAME}*.tar.gz test/test.results
@@ -45,6 +51,3 @@ html:
 test:
 	sh test/test.sh >test/test.results 2>&1
 	diff -u test/gold.results test/test.results
-doc:
-	mandoc -Tlint man1/${NAME}.in.1
-	cp man1/${NAME}.in.1  man1/${NAME}.1

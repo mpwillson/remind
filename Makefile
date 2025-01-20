@@ -30,7 +30,7 @@ install:
 	gzip -c man1/${NAME}.1 >${MAN_DIR}/${NAME}.1.gz
 
 deinstall:
-	rm -f ${INSTALL_DIR}/bin/${NAME} ${MAN_DIR}/${NAME}.1.gz
+	rm -f ${BIN_DIR}/${NAME} ${MAN_DIR}/${NAME}.1.gz
 
 release:
 	@-if [ v${version} = v ]; then \

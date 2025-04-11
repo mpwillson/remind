@@ -18,7 +18,9 @@ datafile.o:	datafile.h
 date.o: 	date.h
 
 man1/${NAME}.1: man1/${NAME}.in.1
-	mandoc -Tlint $<
+	@if [ $$(command -v mandoc) ]; then \
+		mandoc -Tlint $< ; \
+	fi
 	cp $<  $@
 
 clean:

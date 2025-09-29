@@ -67,14 +67,12 @@ time_t date_parse(char *s, int eod)
 
 /* Convert periodic action time to current year and, if month is
  * non-zero, current month */
-time_t date_make_current(time_t t, int month)
+time_t date_make_current(time_t t, int month, time_t base_time)
 {
     struct tm* date;
-    time_t nowtime;
     int cur_year, cur_mon, cur_mday;
 
-    nowtime = date_now();
-    date = localtime(&nowtime);
+    date = localtime(&base_time);
     cur_year = date->tm_year;
     cur_mon = date->tm_mon;
     cur_mday = date->tm_mday;
@@ -87,7 +85,7 @@ time_t date_make_current(time_t t, int month)
     }
     else {
         time_t event_time = mktime(date);
-        if (difftime(event_time,nowtime) < 0) {
+        if (difftime(event_time,base_time) < 0) {
             /* event_time in the past; push to next year, to allow for
              * crossing year boundaries */
             date->tm_year++;

@@ -7,12 +7,19 @@ A C command line program to issue reminders for actions and events.
     remind  [-a] [-c colour_pairs] [-D n[,n] ...] [-d date] [-e]
             [-f filename] [-h] [-i] [-L] [-l] [-m n[,n] ...] [-P pointer]
             [-p] [-q] [-r repeat] [-s] [-t timeout]
-            [-u urgency] [-v] [-w warning] [-X n[,n] ...]
+            [-u urgency] [-v] [-w warning] [-X n[,n] ...] [-z]
             [message]
 
 See remind(1) man page for more.
 
 ## ChangeLog
+
+### 1.4
+
+* Add ability to snooze periodic actions with -z option. This requires
+  the format of the remind.db file to change (rmd4). Export the
+  remind.db database with a 1.3.x version of remind and re-build
+  with 1.4.
 
 ### 1.3.4
 

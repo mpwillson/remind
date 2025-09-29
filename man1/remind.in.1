@@ -27,6 +27,7 @@
 .Op Fl v
 .Op Fl w Ar WARNING
 .Op Fl X Ar n[,n ... ]
+.Op Fl z
 .Op message
 .Sh DESCRIPTION
 .Nm remind
@@ -225,6 +226,11 @@ Default is 7 days.
 Prints the contents of the action(s) specified by
 .Ar n .
 The output includes the next_action pointer.
+.It Fl z
+Snooze the periodic reminders specified via the
+.Fl m
+argument.
+Snoozed reminders will not be issued until their next event time.
 .It Ar message
 Sets the message to be issued for the action.
 Multiple spaces between words  will be reduced to one.

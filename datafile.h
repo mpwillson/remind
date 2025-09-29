@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define MAGIC "rmd3"
+#define MAGIC "rmd4"
 
 enum {
     MSGSIZ = 80,
@@ -19,6 +19,7 @@ enum rem_errors {
     RE_RECNO,
     RE_CREATE,
     RE_VERSION,
+    RE_BADDB,
     RE_ACTIONTYPE,
     RE_LIST
 };
@@ -60,9 +61,10 @@ struct st_action_rec {
                               * only) */
     time_t time;             /* action date/time */
     struct st_repeat repeat; /* repeat parameters */
-    int timeout;            /* timeout value in days; zero for no timeout */
-    int workday;            /* unused */
-    char msg[MSGSIZ+1];     /* the action message */
+    int timeout;             /* timeout value in days; zero for no timeout */
+    time_t next_event;       /* contains time of next periodic event,
+                              * if current snoozed */
+    char msg[MSGSIZ+1];      /* the action message */
 };
 
 typedef struct st_remfile_hdr REMHDR;

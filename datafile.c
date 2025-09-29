@@ -110,7 +110,12 @@ bool rem_open(char* filename)
     if (actfile) {
         rec_read(0,&header);
         if (strcmp(header.magic,MAGIC) != 0) {
-            rem_error_code = RE_VERSION;
+            if (strncmp,header.magic, MAGIC, 3) {
+                rem_error_code = RE_VERSION;
+            }
+            else {
+                rem_error_code = RE_BADDB;
+            }
             fclose(actfile);
             actfile = NULL;
         }

@@ -44,7 +44,8 @@ enum cmd_type {
     CMD_LIST,
     CMD_LIST_HEADER,
     CMD_MODIFY,
-    CMD_MOD_POINTER
+    CMD_MOD_POINTER,
+    CMD_ZZZ
 };
 
 /* Structure for action number list */
@@ -66,6 +67,7 @@ struct st_params {
     int pointer;
     bool version;
     struct st_nlist* actlist;
+    bool done;
 };
 
 typedef struct st_params PARAMS;
@@ -78,8 +80,9 @@ char* error_msg[] = {
     "record [%03d]: bad read",
     "record [%03d]: bad write",
     "action [%03d] does not exist",
-    "unable to create remind file: %s",
-    "that's no remind file: %s",
+    "unable to create database file: %s",
+    "database file does not match current version",
+    "that's no database file: %s",
     "action [%03d] is on free list",
     "action [%03d] can't be found on its list"
 };
@@ -226,6 +229,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     params->hilite = "";
     params->actlist = NULL;
     params->filename = getenv(REMIND_ENV);
+    params->done = false;
     if (params->filename == NULL) params->filename = REMIND_FILE;
     for (int i=0;i<URGCOL;i++) params->ucol[i] = ((i%2==0)?37:40);
 
@@ -238,6 +242,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
     newact->repeat.type = EOF;
     newact->repeat.day = 0;
     newact->repeat.nday = 0;
+    newact->next_event = 0;
 
     while (--argc > 0 && (*++argv)[0] == '-') {
         for (s=argv[0]+1;*s != '\0'; s++) {
@@ -350,6 +355,9 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
                 --argc;
                 params->cmd = CMD_DUMP;
                 break;
+            case 'z':
+                params->cmd = CMD_ZZZ;
+                break;
             default:
                 error(ABORT,"illegal option \"-%c\"\n",*s);
             }
@@ -418,7 +426,7 @@ struct tm* mw_ev_time(time_t* now_time, struct st_repeat repeat, int month)
 }
 
 
-time_t make_active_time(ACTREC* action)
+time_t make_active_time(ACTREC* action, time_t base_time)
 {
     double delta;
     int day_diff, now_wday, now_mon, period, now_mday;
@@ -426,16 +434,15 @@ time_t make_active_time(ACTREC* action)
 
     time_t event_time, nowtime, fd_time, act_time;
 
-    nowtime = date_now();
     switch (action->repeat.type) {
     case RT_YEAR:
-        event_time = date_make_current(action->time,YEAR_ONLY);
+        event_time = date_make_current(action->time,YEAR_ONLY, base_time);
         break;
     case RT_MONTH:
-        event_time = date_make_current(action->time,YEAR_AND_MONTH);
+        event_time = date_make_current(action->time,YEAR_AND_MONTH, base_time);
         break;
     case RT_WEEK:
-        delta = difftime(nowtime,action->time);
+        delta = difftime(base_time,action->time);
         if (delta < 0) {
             /* action time is in the future; just return it */
             event_time = action->time;
@@ -445,14 +452,14 @@ time_t make_active_time(ACTREC* action)
             period = (action->repeat.nday==0?1:action->repeat.nday) * 7 *
                 SECSPERDAY;
             delta = ceil(delta / SECSPERDAY) * SECSPERDAY;
-            event_time = nowtime + period - ((int) delta)%period;
+            event_time = base_time + period - ((int) delta)%period;
         }
         break;
     case RT_MONTH_WEEK:
-        ev_tm = localtime(&nowtime);
+        ev_tm = localtime(&base_time);
         now_mon = ev_tm->tm_mon;
         now_mday = ev_tm->tm_mday;
-        ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon);
+        ev_tm = mw_ev_time(&base_time,action->repeat,now_mon);
         if (ev_tm->tm_mon > now_mon) {
             /* calculated event day next month, look for last wday
              * in current month */
@@ -464,7 +471,7 @@ time_t make_active_time(ACTREC* action)
         else if (ev_tm->tm_mday < now_mday) {
             /* current day is later than this month's occurrence;
              * check next month */
-            ev_tm = mw_ev_time(&nowtime,action->repeat,now_mon+1);
+            ev_tm = mw_ev_time(&base_time,action->repeat,now_mon+1);
         }
         event_time = mktime(ev_tm);
         break;
@@ -521,9 +528,20 @@ void display(ACTYPE type, int urgency, bool quiet, char* hilite)
                 }
                 break;
             case ACT_PERIODIC:
-                event_time = make_active_time(action);
+                event_time = make_active_time(action, date_now());
                 delta = difftime(event_time,date_now());
-                if (delta > 0 && delta <= (action->warning+1)*SECSPERDAY &&
+                /* Snoozed event reset? */
+                if (action->next_event) {
+                    double ndelta = difftime(action->next_event, date_now());
+                    if (ndelta <= (action->warning+1)*SECSPERDAY) {
+                        action->next_event = 0;
+                        if (act_write(actno, action) != 0) {
+                            error(ABORT,"unable to update action: %d", actno);
+                        }
+                    }
+                }
+                if (delta >= 0 && delta <= (action->warning+1)*SECSPERDAY &&
+                    !action->next_event &&
                     (urgency < 0 ||
                      (urgency >= 0 && urgency == action->urgency))) {
                     delta_days = floor(delta/SECSPERDAY);
@@ -580,6 +598,7 @@ void dump_action(int actno)
         printf("Date:    %s\n",date_str(action->time));
         printf("Repeat:  %s\n",repeat_str(action->repeat));
         printf("Timeout: %d\n",action->timeout);
+        printf("NextEvt: %d\n",action->next_event);
         printf("Msg:     \"%s\"\n",action->msg);
     }
     else {
@@ -728,6 +747,21 @@ void export(char* filename)
     }
 }
 
+void set_next_event_time(int actno)
+{
+    ACTREC* action;
+    time_t event_time, next_event_time;
+
+    action = act_read(actno);
+    event_time = make_active_time(action, date_now());
+    next_event_time = make_active_time(action, event_time + SECSPERDAY);
+    action->next_event = next_event_time;
+    if (act_write(actno, action) != 0) {
+        error(ABORT,"unable to update action: %d", actno);
+    }
+    return;
+}
+
 bool perform_cmd(PARAMS* params, ACTREC* newact)
 {
     struct st_nlist* actno;
@@ -791,6 +825,13 @@ bool perform_cmd(PARAMS* params, ACTREC* newact)
         actno = params->actlist;
         while (actno != NULL) {
             modify_action_pointer(actno->n,params->pointer);
+            actno = actno->next;
+        }
+        break;
+    case CMD_ZZZ:
+        actno = params->actlist;
+        while (actno != NULL) {
+            set_next_event_time(actno->n);
             actno = actno->next;
         }
         break;

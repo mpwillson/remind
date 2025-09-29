@@ -78,6 +78,7 @@ echo Export
 ./remind -r w2,1 -w 5 Every Tuesday
 ./remind -L
 ./remind -e >/tmp/remind$$.sh
+sed -i -e 's|^|./|' /tmp/remind$$.sh
 sh /tmp/remind$$.sh
 rm /tmp/remind$$.sh
 echo After re-creation
@@ -104,3 +105,40 @@ echo At ${REMIND_TIME} - one day before DST
 REMIND_TIME=26/10/2030
 echo At ${REMIND_TIME} - one day before end DST
 ./remind -a
+echo Snooze yearly reminder
+./remind -iq
+REMIND_TIME=01/01/2030 ./remind 03/01 Twas brillig and the slithy toves
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/01/2030 ./remind -m 1 -z
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/01/2031 ./remind
+echo Snooze monthly reminder
+./remind -iq
+REMIND_TIME=01/01/2030 ./remind -d 3/01 -r m Twas brillig and the slithy toves
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/01/2030 ./remind -m 1 -z
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/02/2030 ./remind
+echo Snooze weekly reminder
+./remind -iq
+REMIND_TIME=01/01/2030 ./remind -w 5 -d 3/01 -r w4 Twas brillig and the slithy toves
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/01/2030 ./remind -m 1 -z
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=08/01/2030 ./remind
+echo Snooze fortnightly reminder
+./remind -iq
+REMIND_TIME=01/01/2030 ./remind -w 5 -d 3/01 -r w4,2 Twas brillig and the slithy toves
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/01/2030 ./remind -m 1 -z
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=07/01/2030 ./remind
+REMIND_TIME=15/01/2030 ./remind
+echo Snooze day of month reminder
+./remind -iq
+REMIND_TIME=01/01/2030 ./remind -d 3/01 -r n4 Twas brillig and the slithy toves
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=01/01/2030 ./remind -m 1 -z
+REMIND_TIME=01/01/2030 ./remind
+REMIND_TIME=06/02/2030 ./remind
+REMIND_TIME=07/02/2030 ./remind

@@ -7,7 +7,7 @@
     remind  [-a] [-c colour_pairs] [-d date] [-D n[,n] ...] [-e]
     [-f filename] [-h] [-i] [-l] [-L] [-m n[,n] ...] [-p]
     [-P pointer] [-q] [-r repeat] [-s] [-t timeout]
-    [-u urgency] [-v] [-w warning] [-X n[,n] ...]
+    [-u urgency] [-v] [-w warning] [-X n[,n] ...] [-z]
     [message]
 
     See remind(1) man page for more.
@@ -75,7 +75,7 @@ typedef struct st_params PARAMS;
 /* datafile error messages matching error codes */
 char* error_msg[] = {
     "unused",
-    "no such file: %s",
+    "unable to open database file: %s",
     "record [%03d]: bad seek",
     "record [%03d]: bad read",
     "record [%03d]: bad write",
@@ -213,7 +213,7 @@ bool parse_cmd_args(int argc, char *argv[], PARAMS* params, ACTREC* newact)
 {
     int nargs;
     bool first_word = true;
-    char *s, *np, *c, *term;
+    char *s;
     char *switcharg = "dwuDmxtfcPXr"; /* switches that have arguments */
 
     /* set effective time? */
@@ -429,10 +429,10 @@ struct tm* mw_ev_time(time_t* now_time, struct st_repeat repeat, int month)
 time_t make_active_time(ACTREC* action, time_t base_time)
 {
     double delta;
-    int day_diff, now_wday, now_mon, period, now_mday;
-    struct tm* ev_tm, *now;
+    int now_mon, period, now_mday;
+    struct tm* ev_tm;
 
-    time_t event_time, nowtime, fd_time, act_time;
+    time_t event_time;
 
     switch (action->repeat.type) {
     case RT_YEAR:
@@ -598,7 +598,7 @@ void dump_action(int actno)
         printf("Date:    %s\n",date_str(action->time));
         printf("Repeat:  %s\n",repeat_str(action->repeat));
         printf("Timeout: %d\n",action->timeout);
-        printf("NextEvt: %d\n",action->next_event);
+        printf("NextEvt: %s\n",date_full_str(action->next_event));
         printf("Msg:     \"%s\"\n",action->msg);
     }
     else {

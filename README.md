@@ -14,6 +14,11 @@ See remind(1) man page for more.
 
 ## ChangeLog
 
+### 1.4.1
+
+* Fix egregious error in database file opening.
+* Add -Wall to compilation options; changes to eliminate warnings.
+
 ### 1.4
 
 * Add ability to snooze periodic actions with -z option. This requires

@@ -37,13 +37,12 @@ time_t date_now_eod(void)
 */
 time_t date_parse(char *s, int eod)
 {
-    int nread, now_year, century;
+    int nread, century;
     struct tm* date;
     time_t nowtime;
 
     nowtime = (eod?date_now_eod():date_now());
     date = localtime(&nowtime);
-    now_year = date->tm_year;
     century = date->tm_year%100;
     nread = sscanf(s,"%d/%d/%d",&(date->tm_mday),&(date->tm_mon),
                    &(date->tm_year));
@@ -110,7 +109,7 @@ time_t date_make_days_match(time_t t, int wday)
 
 enum {
     DATESTRSIZE = 11,
-    DATEFULLSTRSIZE = 25
+    DATEFULLSTRSIZE = 64
 };
 
 char* date_str(time_t t)
@@ -119,8 +118,8 @@ char* date_str(time_t t)
     static char dstr[DATESTRSIZE];
 
     st = localtime(&t);
-    snprintf(dstr,DATESTRSIZE,"%02d/%02d/%02d", st->tm_mday, st->tm_mon+1,
-             st->tm_year+1900);
+    if (strftime(dstr, DATESTRSIZE, "%d/%m/%Y", st) == 0)
+        return "01/01/1900";
     return dstr;
 }
 
@@ -130,9 +129,7 @@ char* date_full_str(time_t t)
     static char dstr[DATEFULLSTRSIZE];
 
     st = localtime(&t);
-    snprintf(dstr,DATEFULLSTRSIZE,"%02d/%02d/%02dT%02d:%02d:%02d %s",
-             st->tm_mday, st->tm_mon+1, st->tm_year+1900,
-             st->tm_hour, st->tm_min, st->tm_sec,
-             st->tm_zone);
+    if (strftime(dstr, DATEFULLSTRSIZE, "%d/%m/%YT%R:%S %Z", st) == 0)
+        return "01/01/1900T00:00:00 GMT";
     return dstr;
 }

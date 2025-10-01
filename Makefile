@@ -6,7 +6,7 @@ INSTALL_DIR=/usr/local
 BIN_DIR=${INSTALL_DIR}/bin
 MAN_DIR=${INSTALL_DIR}/man/man1
 LDLIBS=-lm
-CFLAGS=-g
+CFLAGS=-g -Wall
 CFLAGS+=-DGIT_VERSION=\"$(shell git describe --tags --always --dirty)\"
 
 target: 	${NAME} man1/${NAME}.1
